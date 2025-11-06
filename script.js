@@ -30,7 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
     activeNode.classList.add('active');
     document.body.classList.add('zoomed-in');
 
-    const scale = parseFloat(node.dataset.scale) || 1;
+    let scale = parseFloat(node.dataset.scale) || 1;
+    // Validate scale to prevent unexpected behavior
+    if (scale <= 0 || scale > 10) {
+      scale = 1;
+    }
     
     // Calculate translation to center the node
     // We get the node's bounding box *in the un-scaled world*
@@ -78,7 +82,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Click on "Zoom Out" button
   zoomOutBtn.addEventListener('click', zoomOut);
-  
-  // Optional: Allow panning by dragging the background
-  // (This is more complex, let's start with this)
 });

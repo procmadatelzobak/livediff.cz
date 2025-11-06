@@ -15,7 +15,7 @@ html, body {
   background-color: var(--color-background);
   color: var(--color-text);
   font-family: var(--font-main);
-  overflow: hidden; /* This is crucial */
+  overflow: hidden; /* Prevents scrollbars during zoom/pan transitions */
 }
 
 #map-container {
@@ -122,8 +122,8 @@ body.zoomed-in .sub-node:not(.active) {
   opacity: 0.1;
   pointer-events: none;
 }
-/* Hide sub-nodes when parent is not active */
-#node-principles:not(.active) .sub-node-container {
+/* Hide sub-nodes when parent node is not active */
+.node:not(.active) .sub-node-container {
   display: none;
 }
 
