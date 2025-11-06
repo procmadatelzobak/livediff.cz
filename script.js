@@ -38,8 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const nodeHeight = node.offsetHeight;
 
     // Calculate the scale needed to fit the node to 90% of the viewport
-    const scaleX = (viewport.width * 0.9) / nodeWidth;
-    const scaleY = (viewport.height * 0.9) / nodeHeight;
+    // Guard against division by zero
+    const scaleX = nodeWidth > 0 ? (viewport.width * 0.9) / nodeWidth : 1;
+    const scaleY = nodeHeight > 0 ? (viewport.height * 0.9) / nodeHeight : 1;
     
     // Use the *smaller* scale to ensure the whole node fits
     const scale = Math.min(scaleX, scaleY);
