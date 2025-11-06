@@ -1,0 +1,142 @@
+/* Reset and Base Styles */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+/* CSS Variables */
+:root {
+  --color-background: #0a0c16;  /* Dark Navy Blue */
+  --color-text: #e0e0e0;        /* Light Gray / Off-white */
+  --color-accent: #f0e04a;      /* Yellow Accent */
+  --color-prompt-user: #76d9e6; /* Cyan for 'user@livediff:~$' */
+  --color-prompt-command: #a9ff9c; /* Light Green for 'cat ...' */
+  --color-comment: #6c7a89;     /* Gray for comments in .conf */
+  --color-key: #e67e22;        /* Orange for keys in .conf */
+  --color-value: #f1c40f;      /* Yellow for values in .conf */
+  --font-main: 'IBM Plex Mono', monospace;
+}
+
+/* Body Styling */
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-main);
+  line-height: 1.6;
+}
+
+/* Terminal Container */
+#terminal {
+  max-width: 80ch;
+  margin: 2rem auto;
+  padding: 2rem;
+}
+
+/* Boot Sequence */
+#boot-sequence p {
+  margin: 0.25rem 0;
+  color: var(--color-text);
+}
+
+/* Prompt Styling */
+h2.prompt {
+  color: var(--color-prompt-command);
+  margin-top: 2.5rem;
+  margin-bottom: 0;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+h2.prompt::before {
+  content: 'user@livediff:~$ ';
+  color: var(--color-prompt-user);
+}
+
+/* Command Output Styling */
+.command-output {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--color-accent);
+}
+
+.command-output p {
+  margin: 0.5rem 0;
+}
+
+/* Config File Styling */
+.conf-style .key {
+  color: var(--color-key);
+}
+
+.conf-style .value {
+  color: var(--color-value);
+}
+
+.conf-style p:first-child,
+.conf-style p:nth-child(2) {
+  color: var(--color-comment);
+  font-style: italic;
+}
+
+/* ls Command Styling */
+.ls-style {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.ls-style span {
+  background: #1a1c26;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Principle Styling */
+.principle h3 {
+  color: var(--color-accent);
+  border-bottom: 1px solid var(--color-comment);
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+/* Notes and Changelog Styling */
+.notes p,
+.changelog p {
+  margin-bottom: 1rem;
+}
+
+.notes p:first-child,
+.changelog p:first-child {
+  color: var(--color-accent);
+  font-weight: bold;
+}
+
+.notes p:nth-child(n+2) {
+  font-style: italic;
+  color: var(--color-prompt-user);
+  margin-left: 1rem;
+}
+
+/* Strong text */
+strong {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+/* Blinking Cursor Animation */
+.blinking-cursor {
+  color: var(--color-accent);
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    visibility: hidden;
+  }
+}
