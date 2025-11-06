@@ -20,37 +20,42 @@ document.addEventListener('DOMContentLoaded', () => {
     node.style.setProperty('--y', `${node.dataset.y}px`);
   });
 
-  // 2. Main Zoom Function
+  // 2. Main Zoom Function (NOW SMARTER)
   function zoomToNode(node) {
     if (activeNode) {
       activeNode.classList.remove('active');
     }
     
     activeNode = node;
+    // CRITICAL: Add 'active' class BEFORE measuring
+    // This makes the hidden content take up space
     activeNode.classList.add('active');
     document.body.classList.add('zoomed-in');
 
-    let scale = parseFloat(node.dataset.scale) || 1;
-    // Validate scale to prevent unexpected behavior
-    if (scale <= 0 || scale > 10) {
-      scale = 1;
-    }
+    // --- NEW LOGIC ---
+    // Measure the node's dimensions *after* content is visible
+    const nodeWidth = node.offsetWidth;
+    const nodeHeight = node.offsetHeight;
+
+    // Calculate the scale needed to fit the node to 90% of the viewport
+    const scaleX = (viewport.width * 0.9) / nodeWidth;
+    const scaleY = (viewport.height * 0.9) / nodeHeight;
     
+    // Use the *smaller* scale to ensure the whole node fits
+    const scale = Math.min(scaleX, scaleY);
+    // --- END NEW LOGIC ---
+
     // Calculate translation to center the node
-    // We get the node's bounding box *in the un-scaled world*
     const nodeRect = node.getBoundingClientRect();
     const worldRect = world.getBoundingClientRect();
-
-    // Calculate center of node relative to world's origin
+    
     const nodeCenterX = (nodeRect.left - worldRect.left) + (nodeRect.width / 2);
     const nodeCenterY = (nodeRect.top - worldRect.top) + (nodeRect.height / 2);
 
-    // Calculate translation needed
-    // We want the node's center to be at the viewport's center
     const translateX = (viewport.width / 2) - (nodeCenterX * scale);
     const translateY = (viewport.height / 2) - (nodeCenterY * scale);
 
-    // Apply the transform
+    // Apply the new, calculated transform
     world.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
   }
 
@@ -67,19 +72,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 4. Event Listeners
-  
-  // Click on a node title to zoom
   world.addEventListener('click', (e) => {
-    // Find the clicked node (either title or the node itself)
     const clickedNode = e.target.closest('.node, .sub-node');
     
     if (clickedNode && !clickedNode.classList.contains('active')) {
-      // Don't re-zoom if already active
       e.stopPropagation();
       zoomToNode(clickedNode);
     }
   });
 
-  // Click on "Zoom Out" button
   zoomOutBtn.addEventListener('click', zoomOut);
+  
+  // 5. --- FIX 1 ---
+  // Automatically zoom to the intro node on page load
+  const introNode = document.getElementById('node-intro');
+  if (introNode) {
+    // Use a small delay to ensure fonts/layout are ready
+    setTimeout(() => {
+      zoomToNode(introNode);
+    }, 100);
+  }
 });
