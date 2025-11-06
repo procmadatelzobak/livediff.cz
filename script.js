@@ -1,142 +1,84 @@
-(function() {
-  'use strict';
-  
-  // Global elements
-  const terminalOutput = document.getElementById('terminal-output');
-  
-  // Helper function to wait
-  const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-  
-  // Helper function to append element and scroll to bottom
-  function appendElement(element) {
-    terminalOutput.appendChild(element);
-    window.scrollTo(0, document.body.scrollHeight);
-  }
-  
-  // Helper function to create prompt
-  function createPrompt(command, isUserCmd = true) {
-    const h2 = document.createElement('h2');
-    h2.className = 'prompt';
-    
-    if (isUserCmd && command) {
-      const userSpan = document.createElement('span');
-      userSpan.className = 'prompt-user';
-      userSpan.textContent = 'user@livediff:~$ ';
-      
-      const cmdSpan = document.createElement('span');
-      cmdSpan.className = 'prompt-cmd';
-      cmdSpan.textContent = command;
-      
-      h2.appendChild(userSpan);
-      h2.appendChild(cmdSpan);
-    } else if (command) {
-      h2.textContent = command;
+document.addEventListener('DOMContentLoaded', () => {
+  const world = document.getElementById('world');
+  const zoomOutBtn = document.getElementById('zoom-out-btn');
+  const allNodes = document.querySelectorAll('.node, .sub-node');
+  const viewport = {
+    width: window.innerWidth,
+    height: window.innerHeight
+  };
+
+  let activeNode = null;
+  const originalState = {
+    x: 0,
+    y: 0,
+    scale: 1
+  };
+
+  // 1. Set initial positions for all nodes
+  allNodes.forEach(node => {
+    node.style.setProperty('--x', `${node.dataset.x}px`);
+    node.style.setProperty('--y', `${node.dataset.y}px`);
+  });
+
+  // 2. Main Zoom Function
+  function zoomToNode(node) {
+    if (activeNode) {
+      activeNode.classList.remove('active');
     }
     
-    return h2;
+    activeNode = node;
+    activeNode.classList.add('active');
+    document.body.classList.add('zoomed-in');
+
+    const scale = parseFloat(node.dataset.scale) || 1;
+    
+    // Calculate translation to center the node
+    // We get the node's bounding box *in the un-scaled world*
+    const nodeRect = node.getBoundingClientRect();
+    const worldRect = world.getBoundingClientRect();
+
+    // Calculate center of node relative to world's origin
+    const nodeCenterX = (nodeRect.left - worldRect.left) + (nodeRect.width / 2);
+    const nodeCenterY = (nodeRect.top - worldRect.top) + (nodeRect.height / 2);
+
+    // Calculate translation needed
+    // We want the node's center to be at the viewport's center
+    const translateX = (viewport.width / 2) - (nodeCenterX * scale);
+    const translateY = (viewport.height / 2) - (nodeCenterY * scale);
+
+    // Apply the transform
+    world.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
   }
-  
-  // Helper function to clone template
-  function cloneTemplate(id) {
-    const template = document.getElementById(id);
-    if (template) {
-      return template.content.cloneNode(true);
+
+  // 3. Zoom Out Function
+  function zoomOut() {
+    if (activeNode) {
+      activeNode.classList.remove('active');
+      activeNode = null;
     }
-    return null;
+    document.body.classList.remove('zoomed-in');
+    
+    // Reset transform
+    world.style.transform = `translate(${originalState.x}px, ${originalState.y}px) scale(${originalState.scale})`;
   }
+
+  // 4. Event Listeners
   
-  // Boot sequence
-  async function startBoot() {
-    const bootLines = [
-      "Booting livediff OS [v0.1.1]...",
-      "Loading core ethics module...",
-      "Mounting /principles...",
-      "Verifying USER_RIGHTS.conf...",
-      "WARNING: Tension detected between [03_respect.md] and [USER_RIGHTS.conf(line:7)].",
-      "This is by design.",
-      "Welcome.",
-      "---"
-    ];
+  // Click on a node title to zoom
+  world.addEventListener('click', (e) => {
+    // Find the clicked node (either title or the node itself)
+    const clickedNode = e.target.closest('.node, .sub-node');
     
-    // Display boot lines
-    for (const line of bootLines) {
-      const p = document.createElement('p');
-      p.textContent = line;
-      appendElement(p);
-      await wait(100);
-    }
-    
-    // Simulate typing the prompt
-    const promptP = document.createElement('p');
-    const userSpan = document.createElement('span');
-    userSpan.className = 'prompt-user';
-    userSpan.textContent = 'user@livediff:~$ ';
-    promptP.appendChild(userSpan);
-    
-    const cursorSpan = document.createElement('span');
-    cursorSpan.className = 'blinking-cursor';
-    cursorSpan.textContent = '█';
-    promptP.appendChild(cursorSpan);
-    
-    appendElement(promptP);
-    await wait(500);
-    
-    // Change to "ls -l" command
-    promptP.innerHTML = '';
-    const userSpan2 = document.createElement('span');
-    userSpan2.className = 'prompt-user';
-    userSpan2.textContent = 'user@livediff:~$ ';
-    promptP.appendChild(userSpan2);
-    promptP.appendChild(document.createTextNode('ls -l'));
-    
-    // Show the main menu
-    await showMenu();
-  }
-  
-  // Show main menu
-  async function showMenu() {
-    const menuContent = cloneTemplate('template-menu');
-    if (menuContent) {
-      appendElement(menuContent);
-    }
-  }
-  
-  // Run command
-  async function runCommand(command, templateId) {
-    // Append the command prompt
-    appendElement(createPrompt(command, true));
-    
-    // Append the cloned content
-    const content = cloneTemplate(templateId);
-    if (content) {
-      appendElement(content);
-    }
-  }
-  
-  // Event listener for command links
-  document.addEventListener('click', async (e) => {
-    let target = e.target;
-    
-    // Check if the clicked element or its parent is a command-link
-    if (!target.classList.contains('command-link')) {
-      if (target.parentElement && target.parentElement.classList.contains('command-link')) {
-        target = target.parentElement;
-      } else {
-        return;
-      }
-    }
-    
-    e.preventDefault();
-    
-    const command = target.dataset.command;
-    const templateId = target.dataset.templateId;
-    
-    if (command && templateId) {
-      await runCommand(command, templateId);
-      await showMenu();
+    if (clickedNode && !clickedNode.classList.contains('active')) {
+      // Don't re-zoom if already active
+      e.stopPropagation();
+      zoomToNode(clickedNode);
     }
   });
+
+  // Click on "Zoom Out" button
+  zoomOutBtn.addEventListener('click', zoomOut);
   
-  // Start boot sequence when DOM is loaded
-  document.addEventListener('DOMContentLoaded', startBoot);
-})();
+  // Optional: Allow panning by dragging the background
+  // (This is more complex, let's start with this)
+});
