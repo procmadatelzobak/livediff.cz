@@ -17,6 +17,8 @@ html, body {
   --color-prompt-cmd: #ffffff;  /* White for the command itself */
   --color-link: #a9ff9c;        /* Light Green for links */
   --color-link-hover: #ffffff;
+  --color-hover-bg: #222;       /* Dark background for hover */
+  --color-ls-bg: #1a1c26;       /* Background for ls-style links */
   --color-comment: #6c7a89;     /* Gray for comments in .conf */
   --color-key: #e67e22;        /* Orange for keys in .conf */
   --color-value: #f1c40f;      /* Yellow for values in .conf */
@@ -91,7 +93,7 @@ h2.prompt {
 
 .command-link:hover {
   color: var(--color-link-hover);
-  background: #222;
+  background: var(--color-hover-bg);
 }
 
 /* ls-style layout */
@@ -101,7 +103,7 @@ h2.prompt {
 }
 
 .ls-style .command-link {
-  background: #1a1c26;
+  background: var(--color-ls-bg);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   border: 1px solid var(--color-border);

@@ -99,11 +99,6 @@
     if (menuContent) {
       appendElement(menuContent);
     }
-    
-    // Append blank prompt
-    const blankPrompt = createPrompt('', true);
-    blankPrompt.style.visibility = 'hidden';
-    appendElement(blankPrompt);
   }
   
   // Run command
