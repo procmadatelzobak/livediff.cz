@@ -10,147 +10,209 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="terminal">
-    <div id="boot-sequence"></div>
-    <div id="content" style="display: none;">
-      
-      <section>
-        <h2 class="prompt">cat README.md</h2>
-        <div class="command-output readme">
-          <p><strong>livediff</strong> není ideologie. Je to proces.</p>
-          <p>Je to můj osobní "diff" – záznam rozdílů mezi tím, kým jsem byl, a kým jsem. Je to přiznání, že žít jinak neznamená být proti systému, ale hledat pravdivost v sobě.</p>
-          <p>Tento web je dokumentace k mému etickému rámci. Je neustále ve vývoji. Počítám s tím, že se mýlím.</p>
-        </div>
-      </section>
+  <main id="terminal-output"></main>
 
-      <section>
-        <h2 class="prompt">cat USER_RIGHTS.conf</h2>
-        <div class="command-output conf-style">
-          <p># Seznam mých přiznaných práv.</p>
-          <p># Tato práva přiznávám sobě a implicitně i všem ostatním.</p>
-          <br>
-          <p><span class="key">right</span> = <span class="value">"být pro sebe ten nejdůležitější člověk na světě"</span></p>
-          <p><span class="key">right</span> = <span class="value">"cokoli zpochybit"</span></p>
-          <p><span class="key">right</span> = <span class="value">"položit si jakoukoli otázku"</span></p>
-          <p><span class="key">right</span> = <span class="value">"tajit svůj pohled na věc"</span></p>
-          <p><span class="key">right</span> = <span class="value">"mýlit se nebo dělat chyby"</span></p>
-          <p><span class="key">right</span> = <span class="value">"mít názor v rozporu s objektivními fakty"</span></p>
-          <p><span class="key">right</span> = <span class="value">"lhát"</span></p>
-          <p><span class="key">right</span> = <span class="value">"zkoumat cokoli"</span></p>
-          <p><span class="key">right</span> = <span class="value">"cokoli nevědět"</span></p>
-          <p><span class="key">right</span> = <span class="value">"čemukoli nerozumět"</span></p>
-          <p><span class="key">right</span> = <span class="value">"mít jakékoli pocity"</span></p>
-          <p><span class="key">right</span> = <span class="value">"myslet si cokoli"</span></p>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="prompt">ls /core_principles</h2>
-        <div class="command-output ls-style">
-          <span>1_Sebevlastnictvi.md</span>
-          <span>2_Dobrovolnost.md</span>
-          <span>3_Respekt.md</span>
-          <span>4_Zodpovednost.md</span>
-          <span>5_Skepticka_pokora.md</span>
-          <span>6_Tvorivost_jako_odpor.md</span>
-          <span>7_Decentralizace_hodnot.md</span>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="prompt">cat /core_principles/1_Sebevlastnictvi.md</h2>
-        <div class="command-output principle">
-          <h3>🜃 1. Sebevlastnictví</h3>
-          <p>Jsem vlastníkem svého těla, času a rozhodnutí.</p>
-          <p>Nikdo nemá přirozené právo se mnou nakládat bez mého souhlasu.</p>
-          <p>Odpovědnost za vlastní činy je cena i svoboda zároveň.</p>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="prompt">cat /core_principles/2_Dobrovolnost.md</h2>
-        <div class="command-output principle">
-          <h3>🜄 2. Dobrovolnost</h3>
-          <p>Spolupráce má smysl jen tehdy, když je dobrovolná.</p>
-          <p>Nucená solidarita není ctnost, je to jen jiný druh násilí.</p>
-          <p>Chci se spojovat s lidmi, protože chci — ne proto, že musím.</p>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="prompt">cat /core_principles/3_Respekt.md</h2>
-        <div class="command-output principle">
-          <h3>🜁 3. Respekt</h3>
-          <p>Respekt k druhému člověku je forma úcty k sobě samému.</p>
-          <p>Nevěřím v rovnost výsledků, ale v rovnost důstojnosti.</p>
-          <p>Každý má právo hledat svůj smysl, i když je jiný než můj.</p>
-          <p><strong>Věřím, že každý člověk je v základu dobrý.</strong> Neshodneme se na tom, co je zlo, nebo si své činy umíme odůvodnit. Místo hodnocení se ptám: "Proč to dělá?".</p>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="prompt">cat /core_principles/4_Zodpovednost.md</h2>
-        <div class="command-output principle">
-          <h3>🜂 4. Zodpovědnost</h3>
-          <p>Svoboda bez zodpovědnosti je útěk.</p>
-          <p>Rozhodnutí mají následky, i když nejsou okamžité.</p>
-          <p>Nechci se vymlouvat na okolnosti — svět mě neřídí, ale já se učím řídit sebe.</p>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="prompt">cat /core_principles/5_Skepticka_pokora.md</h2>
-        <div class="command-output principle">
-          <h3>🜃 5. Skeptická pokora</h3>
-          <p>Nikdo nemá monopol na pravdu, ani já.</p>
-          <p>Snažím se zpochybňovat vlastní jistoty, ale nepopírat realitu.</p>
-          <p>Rozum a pochybnost jsou dva pilíře poznání.</p>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="prompt">cat /core_principles/6_Tvorivost_jako_odpor.md</h2>
-        <div class="command-output principle">
-          <h3>🜄 6. Tvořivost jako odpor</h3>
-          <p>Tvořit znamená odmítat pasivitu.</p>
-          <p>Když svět nedává smysl, dá se přetvořit — po kouskách, zespodu.</p>
-          <p>Tvůrce není ten, kdo čeká na povolení.</p>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="prompt">cat /core_principles/7_Decentralizace_hodnot.md</h2>
-        <div class="command-output principle">
-          <h3>🜁 7. Decentralizace hodnot</h3>
-          <p>Moc má tendenci růst, dokud ji někdo nezpochybní.</p>
-          <p>Chci hledat způsoby, jak rozhodování vracet zpátky lidem, komunitám, jednotlivcům.</p>
-          <p>Technologie jsou jen prostředky — etika je cíl.</p>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="prompt">cat NOTES.log</h2>
-        <div class="command-output notes">
-          <p># Fragmenty a pravidla</p>
-          <p>> Sebeobětování je hřích.</p>
-          <p>> Žít jinak neznamená být proti systému, ale hledat pravdivost v sobě.</p>
-          <p>> Nechci slepě přijímat pravidla, která nedávají smysl, jen proto, že jsou napsaná.</p>
-          <p>> Nechci se opírat o autority, které si samy odporují.</p>
-          <p>> Chci žít podle vlastního rozumu, odpovědnosti a respektu k druhým.</p>
-        </div>
-      </section>
-
-      <section>
-        <h2 class="prompt">cat CHANGELOG.md</h2>
-        <div class="command-output changelog">
-          <p># Historie změn a omylů</p>
-          <p>Tento systém není statický. Je to živý dokument.</p>
-          <p><strong>[Zatím prázdné]</strong> - Až přehodnotím nějaký princip nebo právo, objeví se to zde jako 'diff'. GitHub historie poslouží jako technický záznam, toto bude lidsky čitelný popis mého vývoje.</p>
-        </div>
-      </section>
-
+  <template id="template-menu">
+    <div class="command-output ls-style">
+      <a href="#" class="command-link" data-command="cat README.md" data-template-id="template-readme">README.md</a>
+      <a href="#" class="command-link" data-command="cat USER_RIGHTS.conf" data-template-id="template-rights">USER_RIGHTS.conf</a>
+      <a href="#" class="command-link" data-command="cat /core_principles/" data-template-id="template-principles-list">/core_principles/</a>
+      <a href="#" class="command-link" data-command="cat NOTES.log" data-template-id="template-notes">NOTES.log</a>
+      <a href="#" class="command-link" data-command="cat CHANGELOG.md" data-template-id="template-changelog">CHANGELOG.md</a>
     </div>
-  </div>
-  <script src="script.js"></script>
+  </template>
+
+  <template id="template-principles-list">
+    <div class="command-output ls-style principle-list">
+      <a href="#" class="command-link" data-command="cat 1_Sebevlastnictvi.md" data-template-id="template-p1">1_Sebevlastnictvi.md</a>
+      <a href="#" class="command-link" data-command="cat 2_Dobrovolnost.md" data-template-id="template-p2">2_Dobrovolnost.md</a>
+      <a href="#" class="command-link" data-command="cat 3_Respekt.md" data-template-id="template-p3">3_Respekt.md</a>
+      <a href="#" class="command-link" data-command="cat 4_Zodpovednost.md" data-template-id="template-p4">4_Zodpovednost.md</a>
+      <a href="#" class="command-link" data-command="cat 5_Skepticka_pokora.md" data-template-id="template-p5">5_Skepticka_pokora.md</a>
+      <a href="#" class="command-link" data-command="cat 6_Tvorivost.md" data-template-id="template-p6">6_Tvorivost.md</a>
+      <a href="#" class="command-link" data-command="cat 7_Decentralizace.md" data-template-id="template-p7">7_Decentralizace.md</a>
+      <a href="#" class="command-link" data-command="cat 8_Pravdivost.md" data-template-id="template-p8">8_Pravdivost.md</a>
+      <a href="#" class="command-link" data-command="cat 9_Ticho.md" data-template-id="template-p9">9_Ticho.md</a>
+    </div>
+  </template>
+
+  <template id="template-readme">
+    <div class="command-output readme">
+      <p><strong>LiveDiff</strong> není ideologie, není to hnutí, a už vůbec ne návod. Je to můj osobní proces, záznam vývoje přesvědčení, omylů a oprav. Je to diff mezi tím, kým jsem byl, a tím, kým se snažím být.</p>
+      <p>LiveDiff vznikl z potřeby rozumět sobě. Ne kvůli tomu, abych měl pravdu, ale abych věděl, kdy ji ztrácím. Nechci být součástí systému, který funguje bez vědomí — ale zároveň nechci žít ve vzdoru, který funguje bez smyslu.</p>
+      <p>Žít jinak neznamená být proti systému. Znamená to žít tak, aby mezi tím, co si myslím, cítím a dělám, nebyl rozpor. Znamená to hledat pravdivost v sobě, i když není pohodlná.</p>
+      <p>Tenhle web je můj osobní prostor pro ladění morálních proměnných. Každá hodnota, kterou tu zapíšu, může být v budoucnu přepsána — ne proto, že jsem si přestal stát za svým, ale protože jsem našel lepší vysvětlení.</p>
+      <p>Tenhle dokument není hotový a nikdy nebude. Každý commit je stav mého myšlení v konkrétním okamžiku. Můžu se mýlit, ale i to je součástí procesu. GitHub bude sledovat změny v kódu, já sleduju změny v sobě.</p>
+      <p>LiveDiff není manifest proti světu. Je to pokus s ním žít upřímněji. Nepotřebuju, aby se někdo ztotožnil s mými závěry — stačí, když pochopí, že i on má právo tvořit své.</p>
+      <blockquote>„Změna nezačíná revolucí, ale commitnutím první pochybnosti."</blockquote>
+    </div>
+  </template>
+
+  <template id="template-rights">
+    <div class="command-output conf-style">
+      <p class="comment"># Soubor USER_RIGHTS.conf</p>
+      <p class="comment"># Tento soubor definuje základní svobody, které si vědomě přiznávám sám sobě.</p>
+      <p class="comment"># Není to výčet povolení, ale připomenutí, že zodpovědnost začíná u práva volby.</p>
+      <p class="comment"># Každé z těchto práv se vztahuje i na ostatní — jinak by nebyla skutečná.</p>
+      <br>
+      <p class="comment"># Každé z těchto práv platí oboustranně. Když si ho přiznávám já, přiznávám ho i tobě.</p>
+      <p class="comment"># Tímto vzniká rovnováha mezi svobodou a respektem.</p>
+      <br>
+      <p><span class="key">right</span> = <span class="value">"být pro sebe ten nejdůležitější člověk na světě"</span></p>
+      <p><span class="key">right</span> = <span class="value">"cokoli zpochybit"</span></p>
+      <p><span class="key">right</span> = <span class="value">"položit si jakoukoli otázku"</span></p>
+      <p><span class="key">right</span> = <span class="value">"tajit svůj pohled na věc"</span></p>
+      <p><span class="key">right</span> = <span class="value">"mýlit se nebo dělat chyby"</span></p>
+      <p><span class="key">right</span> = <span class="value">"mít názor v rozporu s objektivními fakty"</span></p>
+      <p><span class="key">right</span> = <span class="value">"lhát"</span></p>
+      <p><span class="key">right</span> = <span class="value">"zkoumat cokoli"</span></p>
+      <p><span class="key">right</span> = <span class="value">"cokoli nevědět"</span></p>
+      <p><span class="key">right</span> = <span class="value">"čemukoli nerozumět"</span></p>
+      <p><span class="key">right</span> = <span class="value">"mít jakékoli pocity"</span></p>
+      <p><span class="key">right</span> = <span class="value">"myslet si cokoli"</span></p>
+      <br>
+      <p class="comment"># Rozšířená práva</p>
+      <p><span class="key">right</span> = <span class="value">"nezapadat do očekávání ostatních"</span></p>
+      <p><span class="key">right</span> = <span class="value">"tvořit vlastní hodnoty a měnit je"</span></p>
+      <p><span class="key">right</span> = <span class="value">"neobhajovat se tam, kde nechci být souzen"</span></p>
+      <p><span class="key">right</span> = <span class="value">"mlčet, i když na to někdo čeká odpověď"</span></p>
+      <p><span class="key">right</span> = <span class="value">"vzdálit se od lidí, i když je mám rád"</span></p>
+      <p><span class="key">right</span> = <span class="value">"pochybovat o všem, co jsem napsal včera"</span></p>
+      <p><span class="key">right</span> = <span class="value">"neobhajovat svou existenci"</span></p>
+      <br>
+      <p class="comment"># Poznámky:</p>
+      <p class="comment"># Každé právo má svůj etický protějšek – zodpovědnost.</p>
+      <p class="comment"># Například: právo lhát nese odpovědnost nést následky důvěry, kterou jsem porušil.</p>
+      <p class="comment"># Právo nevědět nese odpovědnost ptát se, když poznám, že moje nevědomost škodí.</p>
+      <p class="comment"># Svoboda bez reflexe je destrukce, ale reflexe bez svobody je stagnace.</p>
+      <br>
+      <p class="comment"># Tento soubor není zamčený.</p>
+      <p class="comment"># Každé právo může být upraveno commitnutím nové zkušenosti.</p>
+    </div>
+  </template>
+
+  <template id="template-p1">
+    <div class="command-output principle">
+      <h3>🜃 1. Sebevlastnictví</h3>
+      <p><strong>TL;DR:</strong> Jsem vlastníkem svého těla, času a rozhodnutí. Nikdo nemá nárok řídit mě bez mého souhlasu.</p>
+      <p><strong>Proč:</strong> Bez sebevlastnictví je svoboda iluze. Etika začíná tam, kde končí nárok druhých na cizí život.</p>
+      <p><strong>Praxe:</strong> Hlídám své hranice; dávám souhlas explicitně; v projektech vyžaduju dobrovolnost a reverzibilitu (možnost odejít bez sankcí).</p>
+      <p><strong>Příklady:</strong> Nepřijímám "povinnou" loajalitu. Když mě něco svazuje, odcházím, i když to má cenu.</p>
+      <p><em>Navazuje:</em> Dobrovolnost (2), Zodpovědnost (4)</p>
+    </div>
+  </template>
+
+  <template id="template-p2">
+    <div class="command-output principle">
+      <h3>🜄 2. Dobrovolnost</h3>
+      <p><strong>TL;DR:</strong> Spolupráce má smysl jen, když je chtěná. Donucení není ctnost.</p>
+      <p><strong>Proč:</strong> Kvalita vztahů a práce roste s autonomií. Co je vynucené, degraduje důstojnost i výsledek.</p>
+      <p><strong>Praxe:</strong> Jasné nabídky, žádné skryté háčky; právo kdykoli říct "ne"; přehledné odměny a rizika; reverzibilní závazky.</p>
+      <p><strong>Příklady:</strong> Otevřené licencování; opt-in komunitní spolupráce; dohody bez lock-inu.</p>
+      <p><em>Navazuje:</em> Sebevlastnictví (1), Respekt (3)</p>
+    </div>
+  </template>
+
+  <template id="template-p3">
+    <div class="command-output principle">
+      <h3>🜁 3. Respekt</h3>
+      <p><strong>TL;DR:</strong> Rovnost důstojnosti, ne výsledků. Respektuji cizí hranice, očekávám totéž.</p>
+      <p><strong>Proč:</strong> Respekt je minimální funkční jednotka soužití. Bez něj je i svoboda jen agrese.</p>
+      <p><strong>Praxe:</strong> Ptám se dřív, než soudím. Kritizuju činy, ne identitu. Uznávám právo druhého být jiný.</p>
+      <p><strong>Příklady:</strong> V komunikaci volím "já-výroky"; nelovím soukromé informace; dávám možnost vysvětlení.</p>
+      <p><strong>Poznámka:</strong> Věřím, že lidé obvykle jednají z dobrých důvodů – někdy špatně odhadnutých.</p>
+      <p><em>V kolizi bývá s:</em> Sebevlastnictví (1), když se hranice kříží.</p>
+    </div>
+  </template>
+
+  <template id="template-p4">
+    <div class="command-output principle">
+      <h3>🜂 4. Zodpovědnost</h3>
+      <p><strong>TL;DR:</strong> Svoboda bez zodpovědnosti je útěk. Následky přijímám jako cenu autonomie.</p>
+      <p><strong>Proč:</strong> Bez přijetí následků se z etiky stane hra bez skóre. Odpovědnost drží systém poctivý.</p>
+      <p><strong>Praxe:</strong> Když se spletu, opravím; když poruším důvěru, přiznám a nahradím škodu; když nevím, ptám se.</p>
+      <p><strong>Příklady:</strong> Dokumentuju rozhodnutí; dělám post-mortemy; píšu lidské changelogy hodnot.</p>
+      <p><em>Navazuje:</em> Sebevlastnictví (1), Pravdivost (8)</p>
+    </div>
+  </template>
+
+  <template id="template-p5">
+    <div class="command-output principle">
+      <h3>🜃 5. Skeptická pokora</h3>
+      <p><strong>TL;DR:</strong> Nikdo nemá monopol na pravdu – ani já. Pochybuju, ale neschovávám se za relativismus.</p>
+      <p><strong>Proč:</strong> Pochybnost chrání před dogmatem. Pokora drží ego na uzdě, aby mohlo růst poznání.</p>
+      <p><strong>Praxe:</strong> Zkouším své teze falsifikovat; vítám silné protiargumenty; odděluju fakta od přesvědčení.</p>
+      <p><strong>Příklady:</strong> Mapa ≠ teritorium; korektivní čtení oponentů; "silné domněnky, volně držené".</p>
+      <p><em>V kolizi bývá s:</em> Tvořivost (6) – příliš pochybností zabíjí akci.</p>
+    </div>
+  </template>
+
+  <template id="template-p6">
+    <div class="command-output principle">
+      <h3>🜄 6. Tvořivost jako odpor</h3>
+      <p><strong>TL;DR:</strong> Tvořit = říkat "ne" pasivitě. Když svět nedává smysl, přetvářím ho po částech.</p>
+      <p><strong>Proč:</strong> Kreativita je svoboda v chodu. Je to způsob, jak odmítnout bezmoc a legitimizovat vlastní hlas.</p>
+      <p><strong>Praxe:</strong> Stavím malé prototypy; publikuju v nedokonalosti; preferuju iteraci před perfekcionismem.</p>
+      <p><strong>Příklady:</strong> Otevřené nástroje, sdílené know-how, "publish early, fix often".</p>
+      <p><em>Navazuje:</em> Decentralizace (7)</p>
+    </div>
+  </template>
+
+  <template id="template-p7">
+    <div class="command-output principle">
+      <h3>🜁 7. Decentralizace hodnot</h3>
+      <p><strong>TL;DR:</strong> Rozděluju moc, vracím rozhodování blíž lidem a komunitám.</p>
+      <p><strong>Proč:</strong> Centralizace má tendenci bobtnat a zneužívat. Decentralizace zvyšuje odolnost a svobodu volby.</p>
+      <p><strong>Praxe:</strong> Preferuju otevřené standardy, peer-to-peer, lokální rozhodování, možnost forku.</p>
+      <p><strong>Příklady:</strong> Git, federované služby, komunitní governance, smluvní svoboda.</p>
+      <p><em>Navazuje:</em> Dobrovolnost (2), Tvořivost (6)</p>
+    </div>
+  </template>
+
+  <template id="template-p8">
+    <div class="command-output principle">
+      <h3>🜂 8. Pravdivost a záměr</h3>
+      <p><strong>TL;DR:</strong> Pravdivost je výchozí režim. Když ustoupím, musí být důvod obraný a dočasný.</p>
+      <p><strong>Proč:</strong> Pravda je kompresní formát reality. Když lžu, zvyšuji entropii vztahů i své mysli.</p>
+      <p><strong>Praxe:</strong> Říkám pravdu s ohledem na bezpečí a důstojnost; když nemůžu mluvit pravdu, volím mlčení; klam používám jen v krajní obraně a vracím se k transparentnosti.</p>
+      <p><strong>Příklady:</strong> Vyjednávání bez laciných triků; jasné "nevím"; odmítnutí odpovědi místo polopravdy.</p>
+      <p><em>V kolizi bývá s:</em> Právem lhát (USER_RIGHTS.conf). Řešeno proporcionalitou.</p>
+    </div>
+  </template>
+
+  <template id="template-p9">
+    <div class="command-output principle">
+      <h3>🜁 9. Ticho a introspekce</h3>
+      <p><strong>TL;DR:</strong> Ticho není prázdnota, ale nástroj. Bez něj slyším víc cizí svět než sebe.</p>
+      <p><strong>Proč:</strong> Hluk zabíjí vnímání důvodů. Introspekce snižuje reaktivitu a zvyšuje přesnost rozhodnutí.</p>
+      <p><strong>Praxe:</strong> Plánuji si hluchá okna bez notifikací; dělám rekapitulace týdne; píšu deník dilemat.</p>
+      <p><strong>Příklady:</strong> Digitální sabbatical; "single-task focus blocks"; krátké dechové pauzy před konfliktní debatou.</p>
+      <p><em>Navazuje:</em> Skeptická pokora (5)</p>
+    </div>
+  </template>
+
+  <template id="template-notes">
+    <div class="command-output notes">
+      <p class="comment"># Fragmenty a pravidla</p>
+      <p> &gt; Sebeobětování je hřích.</p>
+      <p> &gt; Žít jinak neznamená být proti systému, ale hledat pravdivost v sobě.</p>
+      <p> &gt; Nechci slepě přijímat pravidla, která nedávají smysl, jen proto, že jsou napsaná.</p>
+      <p> &gt; Nechci se opírat o autority, které si samy odporují.</p>
+      <p> &gt; Chci žít podle vlastního rozumu, odpovědnosti a respektu k druhým.</p>
+      <p> &gt; Svoboda bez reverzibility je past.</p>
+      <p> &gt; Pravda je default, mlčení je fallback, klam je last resort.</p>
+      <p> &gt; Když pochybuju dost, začnu jednat a ověřím to v praxi.</p>
+    </div>
+  </template>
+
+  <template id="template-changelog">
+    <div class="command-output changelog">
+      <p class="comment"># Historie změn a omylů</p>
+      <p>Tento systém není statický. Je to živý dokument.</p>
+      <p><strong>[Zatím prázdné]</strong> - Až přehodnotím nějaký princip nebo právo, objeví se to zde jako 'diff'. GitHub historie poslouží jako technický záznam, toto bude lidsky čitelný popis mého vývoje.</p>
+    </div>
+  </template>
+
+  <script src="script.js" defer></script>
 </body>
 </html>

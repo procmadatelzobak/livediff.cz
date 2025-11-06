@@ -13,61 +13,114 @@ html, body {
   --color-background: #0a0c16;  /* Dark Navy Blue */
   --color-text: #e0e0e0;        /* Light Gray / Off-white */
   --color-accent: #f0e04a;      /* Yellow Accent */
-  --color-prompt-user: #76d9e6; /* Cyan for 'user@livediff:~$' */
-  --color-prompt-command: #a9ff9c; /* Light Green for 'cat ...' */
+  --color-prompt-user: #76d9e6; /* Cyan for 'user@livediff' */
+  --color-prompt-cmd: #ffffff;  /* White for the command itself */
+  --color-link: #a9ff9c;        /* Light Green for links */
+  --color-link-hover: #ffffff;
+  --color-hover-bg: #222;       /* Dark background for hover */
+  --color-ls-bg: #1a1c26;       /* Background for ls-style links */
   --color-comment: #6c7a89;     /* Gray for comments in .conf */
   --color-key: #e67e22;        /* Orange for keys in .conf */
   --color-value: #f1c40f;      /* Yellow for values in .conf */
+  --color-border: #333;
   --font-main: 'IBM Plex Mono', monospace;
 }
 
-/* Body Styling */
-body {
+/* Body and HTML Styling */
+html, body {
   background-color: var(--color-background);
   color: var(--color-text);
   font-family: var(--font-main);
+  font-size: 16px;
   line-height: 1.6;
 }
 
-/* Terminal Container */
-#terminal {
+/* Terminal Output Container */
+#terminal-output {
+  padding: 1.5rem;
   max-width: 80ch;
-  margin: 2rem auto;
-  padding: 2rem;
-}
-
-/* Boot Sequence */
-#boot-sequence p {
-  margin: 0.25rem 0;
-  color: var(--color-text);
+  margin: 0 auto;
 }
 
 /* Prompt Styling */
 h2.prompt {
-  color: var(--color-prompt-command);
-  margin-top: 2.5rem;
-  margin-bottom: 0;
+  margin: 1.5rem 0 0.5rem 0;
   font-size: 1rem;
   font-weight: 400;
 }
 
-h2.prompt::before {
-  content: 'user@livediff:~$ ';
+.prompt-user {
   color: var(--color-prompt-user);
+}
+
+.prompt-cmd {
+  color: var(--color-prompt-cmd);
+}
+
+/* Blinking Cursor */
+.blinking-cursor {
+  background: var(--color-accent);
+  color: var(--color-background);
+  animation: blink 1s step-end infinite;
+  padding: 0 2px;
+}
+
+@keyframes blink {
+  50% {
+    visibility: hidden;
+  }
 }
 
 /* Command Output Styling */
 .command-output {
-  margin-top: 0.5rem;
   padding-left: 1rem;
-  border-left: 2px solid var(--color-accent);
+  border-left: 2px solid var(--color-border);
+  margin-bottom: 1rem;
 }
 
 .command-output p {
   margin: 0.5rem 0;
 }
 
+/* Clickable Links */
+.command-link {
+  color: var(--color-link);
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-block;
+  margin: 0.25rem 0.5rem;
+}
+
+.command-link:hover {
+  color: var(--color-link-hover);
+  background: var(--color-hover-bg);
+}
+
+/* ls-style layout */
+.ls-style {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.ls-style .command-link {
+  background: var(--color-ls-bg);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+}
+
+.ls-style .command-link:hover {
+  background: var(--color-accent);
+  color: var(--color-background);
+  border-color: var(--color-accent);
+}
+
 /* Config File Styling */
+.conf-style .comment {
+  color: var(--color-comment);
+  font-style: italic;
+}
+
 .conf-style .key {
   color: var(--color-key);
 }
@@ -76,67 +129,52 @@ h2.prompt::before {
   color: var(--color-value);
 }
 
-.conf-style p:first-child,
-.conf-style p:nth-child(2) {
-  color: var(--color-comment);
-  font-style: italic;
-}
-
-/* ls Command Styling */
-.ls-style {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.ls-style span {
-  background: #1a1c26;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-}
-
 /* Principle Styling */
 .principle h3 {
   color: var(--color-accent);
-  border-bottom: 1px solid var(--color-comment);
+  border-bottom: 1px solid var(--color-border);
   padding-bottom: 0.5rem;
   margin-top: 0;
   margin-bottom: 1rem;
   font-size: 1.2rem;
 }
 
-/* Notes and Changelog Styling */
-.notes p,
+.principle strong {
+  color: var(--color-prompt-user);
+}
+
+.principle em {
+  color: var(--color-comment);
+  font-style: italic;
+}
+
+/* Blockquote Styling */
+blockquote {
+  margin-left: 1rem;
+  padding-left: 1rem;
+  border-left: 3px solid var(--color-accent);
+  color: var(--color-accent);
+  font-style: italic;
+}
+
+/* Notes Styling */
+.notes p {
+  color: var(--color-text);
+  margin: 0.25rem 0;
+}
+
+.notes .comment {
+  color: var(--color-accent);
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+/* Changelog Styling */
 .changelog p {
   margin-bottom: 1rem;
 }
 
-.notes p:first-child,
-.changelog p:first-child {
+.changelog .comment {
   color: var(--color-accent);
   font-weight: bold;
-}
-
-.notes p:nth-child(n+2) {
-  font-style: italic;
-  color: var(--color-prompt-user);
-  margin-left: 1rem;
-}
-
-/* Strong text */
-strong {
-  color: var(--color-accent);
-  font-weight: 700;
-}
-
-/* Blinking Cursor Animation */
-.blinking-cursor {
-  color: var(--color-accent);
-  animation: blink 1s step-end infinite;
-}
-
-@keyframes blink {
-  50% {
-    visibility: hidden;
-  }
 }
