@@ -9,6 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     height: window.innerHeight
   };
 
+  // Constants
+  const DEFAULT_NODE_WIDTH = 200;
+  const DEFAULT_NODE_HEIGHT = 100;
+  const OVERVIEW_PADDING_FACTOR = 1.2;
+  const INIT_DELAY_MS = 100; // Delay for node rendering before measurement
+
   let activeNode = null;
   let overviewState = { x: 0, y: 0, scale: 1 };
   
@@ -102,8 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // Use the absolute coordinates for calculation
       const x = parseFloat(node.dataset.absX);
       const y = parseFloat(node.dataset.absY);
-      const width = node.offsetWidth || 200;
-      const height = node.offsetHeight || 100;
+      const width = node.offsetWidth || DEFAULT_NODE_WIDTH;
+      const height = node.offsetHeight || DEFAULT_NODE_HEIGHT;
 
       minX = Math.min(minX, x - width / 2);
       maxX = Math.max(maxX, x + width / 2);
@@ -114,8 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const mapWidth = maxX - minX;
     const mapHeight = maxY - minY;
 
-    const scaleX = viewport.width / (mapWidth * 1.2);
-    const scaleY = viewport.height / (mapHeight * 1.2);
+    const scaleX = viewport.width / (mapWidth * OVERVIEW_PADDING_FACTOR);
+    const scaleY = viewport.height / (mapHeight * OVERVIEW_PADDING_FACTOR);
     const scale = Math.min(scaleX, scaleY, 1);
 
     const mapCenterX = (minX + maxX) / 2;
@@ -173,5 +179,5 @@ document.addEventListener('DOMContentLoaded', () => {
     calculateOverview();
     drawConnectionLines();
     zoomOut(); // Apply the overview state on load
-  }, 100);
+  }, INIT_DELAY_MS);
 });

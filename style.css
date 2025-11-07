@@ -7,6 +7,8 @@
   --color-accent-2: #D000F5;         /* Electric Magenta */
   --color-node-bg: #0a0c16cc;        /* Translucent node bg */
   --color-border: #ffffff1a;
+  --color-pulse-glow: #d000f533;     /* Magenta glow for pulse */
+  --color-transparent: #00000000;    /* Fully transparent */
   
   --font-main: 'IBM Plex Mono', monospace;
   --transition-speed: 0.9s;
@@ -100,9 +102,9 @@ html, body {
 
 /* POLISH: Pulse keyframes */
 @keyframes pulse {
-  0% { box-shadow: 0 0 10px #00000000; }
-  50% { box-shadow: 0 0 30px #d000f533; border-image: linear-gradient(to bottom right, var(--color-accent-2), var(--color-accent-1)); border-image-slice: 1; }
-  100% { box-shadow: 0 0 10px #00000000; }
+  0% { box-shadow: 0 0 10px var(--color-transparent); }
+  50% { box-shadow: 0 0 30px var(--color-pulse-glow); border-image: linear-gradient(to bottom right, var(--color-accent-2), var(--color-accent-1)); border-image-slice: 1; }
+  100% { box-shadow: 0 0 10px var(--color-transparent); }
 }
 
 .node:hover, .sub-node:hover {
