@@ -4,16 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>livediff.cz - Mapa Anarchokapitalismu</title>
-  <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
-  <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
-  <link href="[https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap](https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap)" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script type="text/javascript" src="vis-network.min.js"></script>
   <link rel="stylesheet" href="style.css">
+  <style type="text/css">
+    #mind-map-container { width: 100vw; height: 100vh; }
+  </style>
 </head>
 <body>
-  <div id="map-container">
+  <!-- Vis.js container for the mind map -->
+  <div id="mind-map-container"></div>
+  
+  <!-- Hidden data structure for parsing (kept for data extraction) -->
+  <div id="data-source" style="display: none;">
     <div id="world">
-      <svg id="connection-lines"></svg>
-
       <div class="node" id="node-ankap" data-x="0" data-y="0">
         <h2 class="node-title">Anarchokapitalismus</h2>
         <div class="node-content">
@@ -97,6 +103,15 @@
         </div>
       </div>
 
+    </div>
+  </div>
+  
+  <!-- Content Modal -->
+  <div id="content-modal" style="display: none;">
+    <div id="modal-overlay"></div>
+    <div id="modal-content-wrapper">
+      <button id="modal-close-btn">&times;</button>
+      <div id="modal-content"></div>
     </div>
   </div>
 
