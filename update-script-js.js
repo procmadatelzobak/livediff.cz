@@ -52,8 +52,8 @@ function updateScriptJS() {
   console.log(`💾 Creating backup: ${BACKUP_PATH}`);
   fs.writeFileSync(BACKUP_PATH, scriptContent, 'utf8');
   
-  // 5. Find and replace the contentData object
-  console.log(`🔄 Updating contentData object...\n`);
+  // 5. Extract existing contentData to preserve unmodified nodes
+  console.log(`🔄 Parsing existing contentData...\n`);
   
   const contentDataStart = scriptContent.indexOf('const contentData = {');
   const contentDataEnd = scriptContent.indexOf('};', contentDataStart) + 2;
@@ -63,22 +63,95 @@ function updateScriptJS() {
     process.exit(1);
   }
   
+  // Extract existing contentData using custom parsing
+  const contentDataCode = scriptContent.substring(contentDataStart, contentDataEnd);
+  const existingContentData = {};
+  
+  try {
+    // Parse each line that looks like a key-value pair
+    const lines = contentDataCode.split('\n');
+    let currentKey = null;
+    let currentValue = '';
+    let inValue = false;
+    
+    for (const line of lines) {
+      // Skip comments and empty lines
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('//') || trimmed === 'const contentData = {' || trimmed === '};') {
+        continue;
+      }
+      
+      // Check if this line starts a new key-value pair
+      const keyMatch = trimmed.match(/^['"]([^'"]+)['"]\s*:\s*(.+)$/);
+      if (keyMatch) {
+        // Save previous key-value if exists
+        if (currentKey && currentValue) {
+          existingContentData[currentKey] = currentValue.replace(/,\s*$/, '').trim();
+        }
+        
+        currentKey = keyMatch[1];
+        let valueStart = keyMatch[2].trim();
+        
+        // Check if value is complete on this line
+        if ((valueStart.startsWith("'") && valueStart.endsWith("',")) ||
+            (valueStart.startsWith('"') && valueStart.endsWith('",')) ||
+            (valueStart.startsWith('`') && valueStart.endsWith('`,')) ||
+            (valueStart.startsWith('<') && valueStart.endsWith(">',")) ||
+            (valueStart.startsWith('<') && valueStart.endsWith('>'))) {
+          // Single-line value
+          currentValue = valueStart.replace(/^['"`]/, '').replace(/['"`],?\s*$/, '');
+          existingContentData[currentKey] = currentValue;
+          currentKey = null;
+          currentValue = '';
+        } else {
+          // Multi-line value
+          currentValue = valueStart;
+          inValue = true;
+        }
+      } else if (inValue) {
+        // Continue multi-line value
+        currentValue += '\n' + trimmed;
+        if (trimmed.endsWith("',") || trimmed.endsWith('",') || trimmed.endsWith('`,')) {
+          existingContentData[currentKey] = currentValue.replace(/^['"`]/, '').replace(/['"`],?\s*$/, '');
+          currentKey = null;
+          currentValue = '';
+          inValue = false;
+        }
+      }
+    }
+    
+    // Save last key-value if exists
+    if (currentKey && currentValue) {
+      existingContentData[currentKey] = currentValue.replace(/^['"`]/, '').replace(/['"`],?\s*$/, '');
+    }
+  } catch (error) {
+    console.error('❌ Error parsing existing contentData:', error.message);
+    console.error('Falling back to empty contentData...');
+  }
+  
+  console.log(`   Found ${Object.keys(existingContentData).length} existing nodes\n`);
+  
+  // 6. Merge scraped content with existing content
+  console.log(`🔄 Merging new content with existing nodes...\n`);
+  
+  const mergedContent = { ...existingContentData, ...scrapedContent };
+  
   // Build new contentData object
   let newContentData = '  const contentData = {\n';
   
-  // Add main node descriptions (keep existing)
-  newContentData += `    'node-ankap': '<h2>Anarchokapitalismus</h2><p>Hlavní texty vysvětlující principy a fungování bezstátní společnosti.</p>',\n`;
-  newContentData += `    'node-amen': '<h2>AMEN</h2><p>Anarchokapitalistický měsíčník. Rozšiřující eseje a úvahy.</p>',\n`;
-  newContentData += `    'node-ekonomie': '<h2>Ekonomie</h2><p>Ekonomické argumenty, mýty a principy.</p>',\n`;
-  newContentData += `    'node-polemika': '<h2>Polemika</h2><p>Odpovědi na časté námitky a kritiky.</p>',\n`;
-  
-  // Add sub-nodes with scraped content
   let updatedCount = 0;
-  for (const [nodeId, content] of Object.entries(scrapedContent)) {
+  let preservedCount = 0;
+  
+  for (const [nodeId, content] of Object.entries(mergedContent)) {
     const escapedContent = escapeForJS(content);
     newContentData += `    '${nodeId}': \`${escapedContent}\`,\n`;
-    updatedCount++;
-    console.log(`   ✅ ${nodeId}`);
+    
+    if (scrapedContent[nodeId]) {
+      updatedCount++;
+      console.log(`   ✅ Updated: ${nodeId}`);
+    } else {
+      preservedCount++;
+    }
   }
   
   newContentData += '  };\n';
@@ -97,7 +170,9 @@ function updateScriptJS() {
   console.log('✅ Update Complete!');
   console.log('='.repeat(80));
   console.log(`📊 Statistics:`);
-  console.log(`   - Updated ${updatedCount} sub-nodes`);
+  console.log(`   - Total nodes: ${Object.keys(mergedContent).length}`);
+  console.log(`   - Updated nodes: ${updatedCount}`);
+  console.log(`   - Preserved nodes: ${preservedCount}`);
   console.log(`   - Backup saved to: ${BACKUP_PATH}`);
   console.log(`   - Updated file: ${SCRIPT_JS_PATH}`);
   console.log('\n💡 Next steps:');
