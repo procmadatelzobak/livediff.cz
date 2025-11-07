@@ -11,13 +11,12 @@
   --color-line: #4D9DE033;           /* Faint dotted lines */
   
   --font-main: 'IBM Plex Mono', monospace;
-  --transition-speed: 0.9s;
+  --transition-speed: 0.8s;
 }
 
 html, body {
   margin: 0;
   padding: 0;
-  /* NEW Gradient background */
   background: radial-gradient(ellipse at center, var(--color-background-start) 0%, var(--color-background-end) 70%);
   background-attachment: fixed;
   color: var(--color-text);
@@ -39,7 +38,6 @@ html, body {
   height: 100%;
   left: 0;
   top: 0;
-  /* *** FIX: Set transform origin to center *** */
   transform-origin: center center;
   transition: transform var(--transition-speed) ease-in-out;
   z-index: 0;
@@ -48,14 +46,19 @@ html, body {
   stroke: var(--color-line);
   stroke-width: 2px;
   stroke-dasharray: 4 2; /* Dotted line */
+  transition: all 0.3s;
 }
+#connection-lines line.active {
+  stroke: var(--color-accent-1);
+  opacity: 0.5;
+}
+
 
 #world {
   position: relative;
   width: 100%;
   height: 100%;
   transform: scale(1) translate(0px, 0px);
-  /* *** FIX: Set transform origin to center *** */
   transform-origin: center center;
   transition: transform var(--transition-speed) ease-in-out;
 }
@@ -68,13 +71,9 @@ html, body {
   padding: 1.5rem;
   transition: all var(--transition-speed), transform 0.2s ease-out;
   cursor: pointer;
-  
-  /* *** FIX: Centered positioning logic *** */
   left: 50%;
   top: 50%;
-  /* We read --x and --y from dataset and apply them */
   transform: translate(calc(-50% + var(--x, 0px)), calc(-50% + var(--y, 0px)));
-  
   border: 2px solid var(--color-border);
   z-index: 1;
 }
@@ -89,9 +88,12 @@ html, body {
   text-align: center;
 }
 .sub-node {
-  min-width: 220px; /* Wider for chapter titles */
+  min-width: 250px; /* Wider for chapter titles */
   border-radius: 8px;
   text-align: center;
+  /* Sub-nodes are hidden by default */
+  display: none;
+  opacity: 0;
 }
 
 .node:hover, .sub-node:hover {
@@ -122,6 +124,9 @@ html, body {
   overflow-y: auto;
   text-align: left;
 }
+.sub-node .sub-node-title {
+  text-align: center;
+}
 
 .node.active > .node-title,
 .sub-node.active > .sub-node-title {
@@ -139,20 +144,36 @@ html, body {
   transform: translate(calc(-50% + var(--x, 0px)), calc(-50% + var(--y, 0px))) scale(1);
 }
 
+/* This is when content is shown */
 .node.active .node-content,
 .sub-node.active .sub-node-content {
   display: block;
   opacity: 1;
 }
+/* This is when a parent node is zoomed */
+.node.zoomed .sub-node-container {
+  display: block;
+}
+.node.zoomed .sub-node {
+  display: block;
+  opacity: 1;
+}
+
+/* When a node is zoomed, hide its content */
+.node.zoomed .node-content {
+  display: none;
+}
+/* When a sub-node is active, hide parent's content */
+.sub-node.active .node-content {
+   display: none;
+}
+
 
 /* Hide other nodes when one is active */
-body.zoomed-in .node:not(.active),
+body.zoomed-in .node:not(.active):not(.zoomed),
 body.zoomed-in .sub-node:not(.active) {
   opacity: 0.1;
   pointer-events: none;
-}
-.node:not(.active) .sub-node-container {
-  display: none;
 }
 
 /* --- UI Elements --- */
@@ -188,23 +209,6 @@ pre {
   background: #000;
   padding: 1rem;
   border-radius: 4px;
-  color: var(--color-accent-1);
-}
-hr {
-  border: 0;
-  border-top: 1px solid var(--color-border);
-  margin: 1.5rem 0;
-}
-blockquote {
-  border-left: 3px solid var(--color-accent-2);
-  padding-left: 1rem;
-  margin-left: 0;
-  font-style: italic;
-  color: var(--color-accent-2);
-}
-.sub-node-content p { margin: 0.5rem 0; }
-.sub-node-content strong,
-.node-content strong {
   color: var(--color-accent-1);
 }
 h3 {
