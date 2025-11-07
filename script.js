@@ -17,7 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
     ['node-ankap', 'node-polemika']
   ];
 
-  // Content data for each node (placeholder content for now)
+  // Content data for each node
+  // NOTE: Full content should be scraped from https://ankap.urza.cz/
+  // Current content is placeholder - update with actual HTML content from source
   const contentData = {
     'node-ankap': '<h2>Anarchokapitalismus</h2><p>Hlavní texty vysvětlující principy a fungování bezstátní společnosti.</p>',
     'node-amen': '<h2>AMEN</h2><p>Anarchokapitalistický měsíčník. Rozšiřující eseje a úvahy.</p>',
@@ -211,11 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   
   const network = new vis.Network(container, data, options);
-  
-  // Expose network for debugging
-  window.network = network;
-  window.nodesDataset = nodesDataset;
-  window.edgesDataset = edgesDataset;
   
   // Track the currently focused node
   let currentFocusedNode = null;
