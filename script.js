@@ -38,8 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
     activeNode.classList.add('active');
     document.body.classList.add('zoomed-in');
 
-    const nodeWidth = node.offsetWidth;
-    const nodeHeight = node.offsetHeight;
+    const nodeWidth = node.offsetWidth || DEFAULT_NODE_WIDTH;
+    const nodeHeight = node.offsetHeight || DEFAULT_NODE_HEIGHT;
 
     const scaleX = (viewport.width * 0.9) / nodeWidth;
     const scaleY = (viewport.height * 0.9) / nodeHeight;
