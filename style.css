@@ -1,26 +1,25 @@
 :root {
-  /* NEW PALETTE: Cyber Ether */
-  --color-background-start: #1a0a33; /* Deep Purple */
-  --color-background-end: #0B021D;   /* Dark Indigo */
-  --color-text: #E0E0E0;
-  --color-accent-1: #00F5D4;         /* Electric Cyan */
-  --color-accent-2: #D000F5;         /* Electric Magenta */
-  --color-node-bg: #0a0c16cc;        /* Translucent node bg */
-  --color-border: #ffffff1a;
-  --color-pulse-glow: #d000f533;     /* Magenta glow for pulse */
-  --color-transparent: #00000000;    /* Fully transparent */
+  /* NEW PALETTE: "Blueprint" */
+  --color-background-start: #1C243B; /* Deep Navy */
+  --color-background-end: #0F131F;   /* Near Black-Blue */
+  --color-text: #D0D0E0;
+  --color-accent-1: #4D9DE0;         /* Technical Blue */
+  --color-accent-2: #E15554;         /* Soft Red/Orange Accent */
+  --color-node-bg: #111522cc;        /* Translucent node bg */
+  --color-border: #4D9DE088;
+  --color-border-hover: #E15554;
+  --color-line: #4D9DE033;           /* Faint dotted lines */
   
   --font-main: 'IBM Plex Mono', monospace;
   --transition-speed: 0.9s;
-  --animation-pulse-duration: 5s;
 }
 
 html, body {
   margin: 0;
   padding: 0;
-  /* FIX: Gradient background */
+  /* NEW Gradient background */
   background: radial-gradient(ellipse at center, var(--color-background-start) 0%, var(--color-background-end) 70%);
-  background-attachment: fixed; /* Ensures gradient doesn't move with scroll */
+  background-attachment: fixed;
   color: var(--color-text);
   font-family: var(--font-main);
   overflow: hidden;
@@ -33,7 +32,7 @@ html, body {
   position: relative;
 }
 
-/* POLISH: SVG lines container */
+/* SVG lines container */
 #connection-lines {
   position: absolute;
   width: 100%;
@@ -46,9 +45,9 @@ html, body {
   z-index: 0;
 }
 #connection-lines line {
-  stroke: var(--color-accent-1);
-  stroke-width: 1px;
-  opacity: 0.2;
+  stroke: var(--color-line);
+  stroke-width: 2px;
+  stroke-dasharray: 4 2; /* Dotted line */
 }
 
 #world {
@@ -76,11 +75,7 @@ html, body {
   /* We read --x and --y from dataset and apply them */
   transform: translate(calc(-50% + var(--x, 0px)), calc(-50% + var(--y, 0px)));
   
-  /* POLISH: Gradient Border */
-  border: 2px solid transparent;
-  background-clip: padding-box;
-  border-image: linear-gradient(to bottom right, var(--color-accent-1), var(--color-accent-2));
-  border-image-slice: 1;
+  border: 2px solid var(--color-border);
   z-index: 1;
 }
 
@@ -92,24 +87,16 @@ html, body {
   justify-content: center;
   border-radius: 50%;
   text-align: center;
-  /* POLISH: Pulse animation */
-  animation: pulse var(--animation-pulse-duration) infinite ease-in-out;
 }
 .sub-node {
-  min-width: 150px;
+  min-width: 220px; /* Wider for chapter titles */
   border-radius: 8px;
-}
-
-/* POLISH: Pulse keyframes */
-@keyframes pulse {
-  0% { box-shadow: 0 0 10px var(--color-transparent); }
-  50% { box-shadow: 0 0 30px var(--color-pulse-glow); border-image: linear-gradient(to bottom right, var(--color-accent-2), var(--color-accent-1)); border-image-slice: 1; }
-  100% { box-shadow: 0 0 10px var(--color-transparent); }
+  text-align: center;
 }
 
 .node:hover, .sub-node:hover {
   transform: translate(calc(-50% + var(--x, 0px)), calc(-50% + var(--y, 0px))) scale(1.05);
-  animation-play-state: paused;
+  border-color: var(--color-border-hover);
 }
 
 .node-title, .sub-node-title {
@@ -119,12 +106,10 @@ html, body {
 }
 
 .sub-node-container {
-  /* This container is now a relative positioning context for sub-nodes */
   position: relative;
-  margin: 0;
+  margin: 1rem 0 0 0;
   padding: 0;
   width: 100%;
-  height: 100%;
 }
 
 /* --- Content Visibility (Handled by JS) --- */
@@ -150,8 +135,7 @@ html, body {
   align-items: flex-start;
   padding: 2rem;
   z-index: 10;
-  animation: none;
-  /* When active, transform is controlled by JS, but we must maintain centering */
+  border-color: var(--color-accent-1);
   transform: translate(calc(-50% + var(--x, 0px)), calc(-50% + var(--y, 0px))) scale(1);
 }
 
@@ -161,11 +145,11 @@ html, body {
   opacity: 1;
 }
 
+/* Hide other nodes when one is active */
 body.zoomed-in .node:not(.active),
 body.zoomed-in .sub-node:not(.active) {
   opacity: 0.1;
   pointer-events: none;
-  animation-play-state: paused;
 }
 .node:not(.active) .sub-node-container {
   display: none;
@@ -176,7 +160,7 @@ body.zoomed-in .sub-node:not(.active) {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: linear-gradient(to right, var(--color-accent-1), var(--color-accent-2));
+  background: var(--color-accent-1);
   color: var(--color-background-end);
   border: none;
   padding: 0.8rem 1.2rem;
@@ -190,7 +174,8 @@ body.zoomed-in .sub-node:not(.active) {
   z-index: 100;
 }
 #zoom-out-btn:hover {
-  box-shadow: 0 0 20px var(--color-accent-2);
+  background: var(--color-accent-2);
+  color: var(--color-text);
 }
 
 body.zoomed-in #zoom-out-btn {
@@ -224,4 +209,5 @@ blockquote {
 }
 h3 {
   color: var(--color-accent-2);
+  font-weight: 700;
 }
