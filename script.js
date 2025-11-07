@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
     height: window.innerHeight
   };
 
+  // Constants for fallback node dimensions
+  const DEFAULT_NODE_WIDTH = 200;
+  const DEFAULT_NODE_HEIGHT = 100;
+
   let activeNode = null;
   let overviewState = { x: 0, y: 0, scale: 1 };
   const nodeConnections = [
@@ -73,8 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
     mainNodes.forEach(node => {
       const x = parseFloat(node.dataset.x);
       const y = parseFloat(node.dataset.y);
-      const width = node.offsetWidth || 200;
-      const height = node.offsetHeight || 100;
+      const width = node.offsetWidth || DEFAULT_NODE_WIDTH;
+      const height = node.offsetHeight || DEFAULT_NODE_HEIGHT;
 
       minX = Math.min(minX, x - width / 2);
       maxX = Math.max(maxX, x + width / 2);
