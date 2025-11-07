@@ -120,8 +120,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const mapWidth = maxX - minX;
     const mapHeight = maxY - minY;
 
-    const scaleX = viewport.width / (mapWidth * OVERVIEW_PADDING_FACTOR);
-    const scaleY = viewport.height / (mapHeight * OVERVIEW_PADDING_FACTOR);
+    // Guard against division by zero if all nodes are at the same position
+    const scaleX = mapWidth > 0 ? viewport.width / (mapWidth * OVERVIEW_PADDING_FACTOR) : 1;
+    const scaleY = mapHeight > 0 ? viewport.height / (mapHeight * OVERVIEW_PADDING_FACTOR) : 1;
     const scale = Math.min(scaleX, scaleY, 1);
 
     const mapCenterX = (minX + maxX) / 2;
