@@ -89,8 +89,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const mapWidth = maxX - minX;
     const mapHeight = maxY - minY;
 
-    const scaleX = viewport.width / (mapWidth * 1.2);
-    const scaleY = viewport.height / (mapHeight * 1.2);
+    // Guard against division by zero if all nodes are at the same position
+    const scaleX = mapWidth > 0 ? viewport.width / (mapWidth * 1.2) : 1;
+    const scaleY = mapHeight > 0 ? viewport.height / (mapHeight * 1.2) : 1;
     const scale = Math.min(scaleX, scaleY, 1);
 
     const mapCenterX = (minX + maxX) / 2;
@@ -105,10 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // 5. POLISH: Draw Connection Lines
   function drawConnectionLines() {
     const svgNS = "http://www.w3.org/2000/svg";
-    
-    // Set SVG viewport to match the viewport dimensions
-    // Use logical viewport dimensions, not transformed world dimensions
-    svgLines.setAttribute('viewBox', `0 0 ${viewport.width} ${viewport.height}`);
     
     nodeConnections.forEach(pair => {
       const startNode = document.getElementById(pair[0]);
@@ -144,6 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
   zoomOutBtn.addEventListener('click', zoomOut);
   
   // 7. INITIALIZATION
+  // Set SVG viewport once during initialization
+  svgLines.setAttribute('viewBox', `0 0 ${viewport.width} ${viewport.height}`);
   calculateOverview();
   drawConnectionLines();
   zoomOut(); // Apply the overview state on load

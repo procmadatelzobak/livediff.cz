@@ -94,9 +94,9 @@ html, body {
 
 /* POLISH: Pulse keyframes */
 @keyframes pulse {
-  0% { box-shadow: 0 0 10px #00000000; }
-  50% { box-shadow: 0 0 30px #d000f533; }
-  100% { box-shadow: 0 0 10px #00000000; }
+  0% { box-shadow: 0 0 10px transparent; }
+  50% { box-shadow: 0 0 30px rgba(208, 0, 245, 0.2); }
+  100% { box-shadow: 0 0 10px transparent; }
 }
 
 .node:hover, .sub-node:hover {
