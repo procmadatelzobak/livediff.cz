@@ -12,13 +12,13 @@
   --transition-speed: 0.9s;
   --animation-pulse-duration: 5s;
 }
-}
 
 html, body {
   margin: 0;
   padding: 0;
-  /* POLISH: Gradient background */
+  /* FIX: Gradient background */
   background: radial-gradient(ellipse at center, var(--color-background-start) 0%, var(--color-background-end) 70%);
+  background-attachment: fixed; /* Ensures gradient doesn't move with scroll */
   color: var(--color-text);
   font-family: var(--font-main);
   overflow: hidden;
@@ -38,8 +38,10 @@ html, body {
   height: 100%;
   left: 0;
   top: 0;
+  /* *** FIX: Set transform origin to center *** */
   transform-origin: center center;
   transition: transform var(--transition-speed) ease-in-out;
+  z-index: 0;
 }
 #connection-lines line {
   stroke: var(--color-accent-1);
@@ -63,18 +65,21 @@ html, body {
   background: var(--color-node-bg);
   backdrop-filter: blur(5px);
   padding: 1.5rem;
-  transition: all var(--transition-speed), transform 0.2s ease-out; /* Keep hover fast */
+  transition: all var(--transition-speed), transform 0.2s ease-out;
   cursor: pointer;
   
   /* *** FIX: Centered positioning logic *** */
   left: 50%;
   top: 50%;
-  transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y)));
+  /* We read --x and --y from dataset and apply them */
+  transform: translate(calc(-50% + var(--x, 0px)), calc(-50% + var(--y, 0px)));
   
   /* POLISH: Gradient Border */
-  border: 2px solid;
+  border: 2px solid transparent;
+  background-clip: padding-box;
   border-image: linear-gradient(to bottom right, var(--color-accent-1), var(--color-accent-2));
   border-image-slice: 1;
+  z-index: 1;
 }
 
 .node {
@@ -95,28 +100,29 @@ html, body {
 
 /* POLISH: Pulse keyframes */
 @keyframes pulse {
-  0% { box-shadow: 0 0 10px transparent; }
-  50% { box-shadow: 0 0 30px rgba(208, 0, 245, 0.2); }
-  100% { box-shadow: 0 0 10px transparent; }
+  0% { box-shadow: 0 0 10px #00000000; }
+  50% { box-shadow: 0 0 30px #d000f533; border-image: linear-gradient(to bottom right, var(--color-accent-2), var(--color-accent-1)); border-image-slice: 1; }
+  100% { box-shadow: 0 0 10px #00000000; }
 }
 
 .node:hover, .sub-node:hover {
-  /* Keep hover transform working with position */
-  transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1.05);
+  transform: translate(calc(-50% + var(--x, 0px)), calc(-50% + var(--y, 0px))) scale(1.05);
   animation-play-state: paused;
 }
 
 .node-title, .sub-node-title {
   margin: 0;
-  /* POLISH: Use first accent color */
   color: var(--color-accent-1);
   transition: all var(--transition-speed);
 }
 
 .sub-node-container {
+  /* This container is now a relative positioning context for sub-nodes */
   position: relative;
   margin: 0;
   padding: 0;
+  width: 100%;
+  height: 100%;
 }
 
 /* --- Content Visibility (Handled by JS) --- */
@@ -142,8 +148,9 @@ html, body {
   align-items: flex-start;
   padding: 2rem;
   z-index: 10;
-  animation: none; /* Stop pulsing when active */
-  transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1);
+  animation: none;
+  /* When active, transform is controlled by JS, but we must maintain centering */
+  transform: translate(calc(-50% + var(--x, 0px)), calc(-50% + var(--y, 0px))) scale(1);
 }
 
 .node.active .node-content,
@@ -156,8 +163,6 @@ body.zoomed-in .node:not(.active),
 body.zoomed-in .sub-node:not(.active) {
   opacity: 0.1;
   pointer-events: none;
-}
-body.zoomed-in .node:not(.active) {
   animation-play-state: paused;
 }
 .node:not(.active) .sub-node-container {
@@ -169,7 +174,6 @@ body.zoomed-in .node:not(.active) {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  /* POLISH: New style for button */
   background: linear-gradient(to right, var(--color-accent-1), var(--color-accent-2));
   color: var(--color-background-end);
   border: none;
@@ -212,4 +216,10 @@ blockquote {
   color: var(--color-accent-2);
 }
 .sub-node-content p { margin: 0.5rem 0; }
-.sub-node-content strong { color: var(--color-accent-1); }
+.sub-node-content strong,
+.node-content strong {
+  color: var(--color-accent-1);
+}
+h3 {
+  color: var(--color-accent-2);
+}

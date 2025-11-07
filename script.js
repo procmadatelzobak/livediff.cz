@@ -9,25 +9,48 @@ document.addEventListener('DOMContentLoaded', () => {
     height: window.innerHeight
   };
 
-  // Constants for fallback node dimensions
-  const DEFAULT_NODE_WIDTH = 200;
-  const DEFAULT_NODE_HEIGHT = 100;
-  // Padding factor for overview mode (adds 20% padding around all nodes)
-  const OVERVIEW_PADDING_FACTOR = 1.2;
-
   let activeNode = null;
   let overviewState = { x: 0, y: 0, scale: 1 };
+  
+  // NEW connections for AnKap map
   const nodeConnections = [
-    ['node-intro', 'node-rights'],
-    ['node-intro', 'node-principles'],
-    ['node-intro', 'node-notes'],
-    ['node-rights', 'node-principles']
+    ['node-uvod', 'node-principy'],
+    ['node-uvod', 'node-stat'],
+    ['node-uvod', 'node-trh'],
+    ['node-trh', 'node-pravo'],
+    ['node-trh', 'node-myty'],
+    ['node-principy', 'node-pravo']
   ];
 
   // 1. Set initial positions
   allNodes.forEach(node => {
-    node.style.setProperty('--x', `${node.dataset.x}px`);
-    node.style.setProperty('--y', `${node.dataset.y}px`);
+    // *** FIX for nested nodes ***
+    // Sub-nodes are positioned *relative* to their parent node
+    const isSubNode = node.classList.contains('sub-node');
+    const parentNode = isSubNode ? node.closest('.node') : null;
+    
+    let x = parseFloat(node.dataset.x);
+    let y = parseFloat(node.dataset.y);
+
+    if (isSubNode && parentNode) {
+      // Add parent's coordinates to get absolute world position
+      const parentX = parseFloat(parentNode.dataset.x);
+      const parentY = parseFloat(parentNode.dataset.y);
+      x += parentX;
+      y += parentY;
+      
+      // Store the *absolute* position back in the dataset
+      // This simplifies the zoomToNode function
+      node.dataset.absX = x;
+      node.dataset.absY = y;
+    } else {
+      node.dataset.absX = x;
+      node.dataset.absY = y;
+    }
+    
+    // Set CSS variables for positioning
+    node.style.setProperty('--x', `${x}px`);
+    node.style.setProperty('--y', `${y}px`);
   });
 
   // 2. Main Zoom Function (FIXED)
@@ -40,18 +63,17 @@ document.addEventListener('DOMContentLoaded', () => {
     activeNode.classList.add('active');
     document.body.classList.add('zoomed-in');
 
-    const nodeWidth = node.offsetWidth || DEFAULT_NODE_WIDTH;
-    const nodeHeight = node.offsetHeight || DEFAULT_NODE_HEIGHT;
+    const nodeWidth = node.offsetWidth;
+    const nodeHeight = node.offsetHeight;
 
     const scaleX = (viewport.width * 0.9) / nodeWidth;
     const scaleY = (viewport.height * 0.9) / nodeHeight;
     const scale = Math.min(scaleX, scaleY);
 
-    // *** FIX: Centering logic for 'transform-origin: center' ***
-    const translateX = -parseFloat(node.dataset.x) * scale;
-    const translateY = -parseFloat(node.dataset.y) * scale;
+    // *** FIX: Centering logic now uses the pre-calculated absolute coordinates ***
+    const translateX = -parseFloat(node.dataset.absX) * scale;
+    const translateY = -parseFloat(node.dataset.absY) * scale;
 
-    // Apply the transform to both world and SVG lines
     const transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
     world.style.transform = transform;
     svgLines.style.transform = transform;
@@ -77,10 +99,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
 
     mainNodes.forEach(node => {
-      const x = parseFloat(node.dataset.x);
-      const y = parseFloat(node.dataset.y);
-      const width = node.offsetWidth || DEFAULT_NODE_WIDTH;
-      const height = node.offsetHeight || DEFAULT_NODE_HEIGHT;
+      // Use the absolute coordinates for calculation
+      const x = parseFloat(node.dataset.absX);
+      const y = parseFloat(node.dataset.absY);
+      const width = node.offsetWidth || 200;
+      const height = node.offsetHeight || 100;
 
       minX = Math.min(minX, x - width / 2);
       maxX = Math.max(maxX, x + width / 2);
@@ -91,9 +114,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const mapWidth = maxX - minX;
     const mapHeight = maxY - minY;
 
-    // Guard against division by zero if all nodes are at the same position
-    const scaleX = mapWidth > 0 ? viewport.width / (mapWidth * OVERVIEW_PADDING_FACTOR) : 1;
-    const scaleY = mapHeight > 0 ? viewport.height / (mapHeight * OVERVIEW_PADDING_FACTOR) : 1;
+    const scaleX = viewport.width / (mapWidth * 1.2);
+    const scaleY = viewport.height / (mapHeight * 1.2);
     const scale = Math.min(scaleX, scaleY, 1);
 
     const mapCenterX = (minX + maxX) / 2;
@@ -105,9 +127,12 @@ document.addEventListener('DOMContentLoaded', () => {
     overviewState = { x: translateX, y: translateY, scale: scale };
   }
 
-  // 5. POLISH: Draw Connection Lines
+  // 5. Draw Connection Lines (FIXED)
   function drawConnectionLines() {
+    const worldRect = world.getBoundingClientRect();
     const svgNS = "http://www.w3.org/2000/svg";
+    
+    svgLines.setAttribute('viewBox', `0 0 ${worldRect.width} ${worldRect.height}`);
     
     nodeConnections.forEach(pair => {
       const startNode = document.getElementById(pair[0]);
@@ -115,11 +140,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (startNode && endNode) {
         const line = document.createElementNS(svgNS, 'line');
-        // Get center of viewport + node's offset
-        const x1 = (viewport.width / 2) + parseFloat(startNode.dataset.x);
-        const y1 = (viewport.height / 2) + parseFloat(startNode.dataset.y);
-        const x2 = (viewport.width / 2) + parseFloat(endNode.dataset.x);
-        const y2 = (viewport.height / 2) + parseFloat(endNode.dataset.y);
+        // Use absolute coordinates
+        const x1 = (worldRect.width / 2) + parseFloat(startNode.dataset.absX);
+        const y1 = (worldRect.height / 2) + parseFloat(startNode.dataset.absY);
+        const x2 = (worldRect.width / 2) + parseFloat(endNode.dataset.absX);
+        const y2 = (worldRect.height / 2) + parseFloat(endNode.dataset.absY);
         
         line.setAttribute('x1', x1);
         line.setAttribute('y1', y1);
@@ -143,9 +168,10 @@ document.addEventListener('DOMContentLoaded', () => {
   zoomOutBtn.addEventListener('click', zoomOut);
   
   // 7. INITIALIZATION
-  // Set SVG viewport once during initialization
-  svgLines.setAttribute('viewBox', `0 0 ${viewport.width} ${viewport.height}`);
-  calculateOverview();
-  drawConnectionLines();
-  zoomOut(); // Apply the overview state on load
+  // Use a small delay to ensure nodes have rendered for measurement
+  setTimeout(() => {
+    calculateOverview();
+    drawConnectionLines();
+    zoomOut(); // Apply the overview state on load
+  }, 100);
 });
