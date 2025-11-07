@@ -100,12 +100,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 5. POLISH: Draw Connection Lines
   function drawConnectionLines() {
-    const worldRect = world.getBoundingClientRect();
     const svgNS = "http://www.w3.org/2000/svg";
     
-    // Set SVG viewport to match the 'world'
-    // We position it from center, same as world
-    svgLines.setAttribute('viewBox', `0 0 ${worldRect.width} ${worldRect.height}`);
+    // Set SVG viewport to match the viewport dimensions
+    // Use logical viewport dimensions, not transformed world dimensions
+    svgLines.setAttribute('viewBox', `0 0 ${viewport.width} ${viewport.height}`);
     
     nodeConnections.forEach(pair => {
       const startNode = document.getElementById(pair[0]);
@@ -113,11 +112,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (startNode && endNode) {
         const line = document.createElementNS(svgNS, 'line');
-        // Get center of world + node's offset
-        const x1 = (worldRect.width / 2) + parseFloat(startNode.dataset.x);
-        const y1 = (worldRect.height / 2) + parseFloat(startNode.dataset.y);
-        const x2 = (worldRect.width / 2) + parseFloat(endNode.dataset.x);
-        const y2 = (worldRect.height / 2) + parseFloat(endNode.dataset.y);
+        // Get center of viewport + node's offset
+        const x1 = (viewport.width / 2) + parseFloat(startNode.dataset.x);
+        const y1 = (viewport.height / 2) + parseFloat(startNode.dataset.y);
+        const x2 = (viewport.width / 2) + parseFloat(endNode.dataset.x);
+        const y2 = (viewport.height / 2) + parseFloat(endNode.dataset.y);
         
         line.setAttribute('x1', x1);
         line.setAttribute('y1', y1);
