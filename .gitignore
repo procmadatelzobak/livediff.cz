@@ -1,2 +1,5 @@
 node_modules/
 package-lock.json
+ankap-content.json
+script.js.backup
+scrape-content.js

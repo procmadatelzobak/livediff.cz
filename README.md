@@ -33,11 +33,41 @@ Interactive mind map visualization of anarcho-capitalist philosophy using vis.js
 
 ## Content Updates
 
-The content data is stored in the `contentData` object in `script.js`. To update content:
+The content data is stored in the `contentData` object in `script.js`. To populate it with actual content from the source website:
 
-1. Scrape full content from the source website: https://ankap.urza.cz/
-2. Update each node ID in the `contentData` object with the corresponding HTML content
-3. Ensure all chapter titles and subchapters are included
+### Automated Scraping (Recommended)
+
+1. Run the scraping script from a machine with access to ankap.urza.cz:
+   ```bash
+   node fetch-ankap-content.js
+   ```
+   This creates `ankap-content.json` with all 47 chapters.
+
+2. Update script.js with the scraped content:
+   ```bash
+   node update-script-js.js
+   ```
+
+3. Test the changes:
+   ```bash
+   open index.html  # or serve with any HTTP server
+   ```
+
+See [CONTENT_SCRAPING.md](CONTENT_SCRAPING.md) for detailed instructions and troubleshooting.
+
+### Manual Update
+
+If the automated scraper doesn't work:
+1. Visit each chapter URL on https://ankap.urza.cz/
+2. Copy the article HTML content
+3. Create `ankap-content.json` with the structure:
+   ```json
+   {
+     "sub-node-uvod": "<h2>Title</h2><p>Content...</p>",
+     ...
+   }
+   ```
+4. Run `node update-script-js.js` to update script.js
 
 ## Development
 
