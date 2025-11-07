@@ -1,226 +1,347 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const world = document.getElementById('world');
-  const svgLines = document.getElementById('connection-lines');
-  const zoomOutBtn = document.getElementById('zoom-out-btn');
-  const allNodes = document.querySelectorAll('.node, .sub-node');
-  const mainNodes = document.querySelectorAll('.node');
-  const subNodes = document.querySelectorAll('.sub-node');
-  const viewport = {
-    width: window.innerWidth,
-    height: window.innerHeight
-  };
+// ============================================
+// Mind Map Visualization using vis.js
+// ============================================
 
-  let activeNode = null; // The node currently being viewed (zoomed & showing content)
-  let zoomedNode = null; // The parent node that is zoomed (showing sub-nodes)
-  let overviewState = { x: 0, y: 0, scale: 1 };
+document.addEventListener('DOMContentLoaded', () => {
+  // Get references to DOM elements
+  const container = document.getElementById('mind-map-container');
+  const zoomOutBtn = document.getElementById('zoom-out-btn');
+  const modal = document.getElementById('content-modal');
+  const modalContent = document.getElementById('modal-content');
+  const modalCloseBtn = document.getElementById('modal-close-btn');
   
-  // Connections between main nodes
+  // Main connections between nodes
   const mainConnections = [
     ['node-ankap', 'node-amen'],
     ['node-ankap', 'node-ekonomie'],
     ['node-ankap', 'node-polemika']
   ];
 
-  // 1. Set initial positions and calculate absolute coordinates
-  allNodes.forEach(node => {
-    const isSubNode = node.classList.contains('sub-node');
-    const parentNode = isSubNode ? node.closest('.node') : null;
-    
-    let x = parseFloat(node.dataset.x);
-    let y = parseFloat(node.dataset.y);
+  // Content data for each node
+  // NOTE: Full content should be scraped from https://ankap.urza.cz/
+  // Current content is placeholder - update with actual HTML content from source
+  const contentData = {
+    'node-ankap': '<h2>Anarchokapitalismus</h2><p>Hlavní texty vysvětlující principy a fungování bezstátní společnosti.</p>',
+    'node-amen': '<h2>AMEN</h2><p>Anarchokapitalistický měsíčník. Rozšiřující eseje a úvahy.</p>',
+    'node-ekonomie': '<h2>Ekonomie</h2><p>Ekonomické argumenty, mýty a principy.</p>',
+    'node-polemika': '<h2>Polemika</h2><p>Odpovědi na časté námitky a kritiky.</p>',
+    // Sub-nodes for Anarchokapitalismus
+    'sub-node-uvod': '<h2>Úvod</h2><p>Úvodní text k anarchokapitalismu.</p><p>(Kompletní obsah bude doplněn ze zdroje ankap.urza.cz)</p>',
+    'sub-node-ceny': '<h2>Vzácné zdroje a systém cen</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-planovani': '<h2>Proč selhává centrální plánování</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-kalkulace': '<h2>Nemožnost ekonomické kalkulace</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-kalkulace-jednotlivec': '<h2>Problém kalkulace očima jednotlivce</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-nap': '<h2>Princip neagrese</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-nezodpovednost': '<h2>Podpora nezodpovědnosti</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-penize': '<h2>Peníze</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-hasici': '<h2>Hasiči</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-kultura': '<h2>Umění a kultura</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-skolstvi': '<h2>Školství</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-skolstvi-svoboda': '<h2>Školství a svoboda</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-propaganda': '<h2>Vzdělávání a propaganda</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-social': '<h2>Sociální systém</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-zdravi': '<h2>Zdravotnictví</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-prostranstvi': '<h2>Veřejná prostranství a svoboda slova</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-silnice': '<h2>Silnice a dopravní pravidla</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-zivotni': '<h2>Životní prostředí</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-soudy': '<h2>Soudnictví</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-soudy-nap': '<h2>Svobodné soudnictví a princip neagrese</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-vymahani': '<h2>Vymáhání práva</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-trest': '<h2>Zločin a trest</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-armada': '<h2>Armáda</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-myty': '<h2>Boření mýtů</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-zaver': '<h2>Závěr</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-drogy': '<h2>Drogy</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-zbrane': '<h2>Zbraně</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-veda': '<h2>Věda</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-prace': '<h2>Práce</h2><p>(Obsah bude doplněn)</p>',
+    // Sub-nodes for AMEN
+    'sub-node-etika': '<h2>Etika</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-prava': '<h2>Lidská práva</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-nasili': '<h2>Anarchie je násilná</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-agrese': '<h2>Agrese</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-jednani': '<h2>Lidské jednání</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-nezodpovednost2': '<h2>Nezodpovědnost</h2><p>(Obsah bude doplněn)</p>',
+    // Sub-nodes for Ekonomie
+    'sub-node-monopoly': '<h2>Monopoly</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-kartely': '<h2>Kartely</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-dumping': '<h2>Dumpingové ceny</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-spekulanti': '<h2>Spekulanti</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-statky': '<h2>Veřejné statky</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-nekvalitni': '<h2>Nekvalitní soukromé instituce</h2><p>(Obsah bude doplněn)</p>',
+    // Sub-nodes for Polemika
+    'sub-node-praxe': '<h2>Teorie a praxe</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-vlastnosti': '<h2>Vlastnosti lidí</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-tradice': '<h2>Tradice státu</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-inzenyrstvi': '<h2>Sociální inženýrství</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-chyby': '<h2>Chyby anarchokapitalismu</h2><p>(Obsah bude doplněn)</p>',
+    'sub-node-byrokracie': '<h2>Byrokracie v anarchokapitalismu</h2><p>(Obsah bude doplněn)</p>'
+  };
 
-    if (isSubNode && parentNode) {
-      const parentX = parseFloat(parentNode.dataset.x);
-      const parentY = parseFloat(parentNode.dataset.y);
-      x += parentX;
-      y += parentY;
-    }
+  // ============================================
+  // Parse Data from HTML
+  // ============================================
+  function parseDataFromDOM() {
+    const nodes = [];
+    const edges = [];
     
-    node.dataset.absX = x;
-    node.dataset.absY = y;
-    
-    node.style.setProperty('--x', `${x}px`);
-    node.style.setProperty('--y', `${y}px`);
-  });
-
-  // 2. Main Zoom Function (NEW LOGIC)
-  function zoomToNode(node) {
-    // Clear previous states
-    if (activeNode) activeNode.classList.remove('active');
-    if (zoomedNode) zoomedNode.classList.remove('zoomed');
-    
-    document.body.classList.add('zoomed-in');
-
-    // Check node type
-    if (node.classList.contains('sub-node')) {
-      // --- ZOOM TO SUB-NODE (Show content) ---
-      activeNode = node;
-      zoomedNode = node.closest('.node'); // Keep parent as 'zoomed'
-      activeNode.classList.add('active');
-      if (zoomedNode) zoomedNode.classList.add('zoomed');
+    // Parse main nodes
+    const mainNodeElements = document.querySelectorAll('#data-source .node');
+    mainNodeElements.forEach(nodeEl => {
+      const id = nodeEl.id;
+      const title = nodeEl.querySelector('.node-title')?.textContent || '';
       
-    } else if (node.classList.contains('node')) {
-      // --- ZOOM TO MAIN NODE (Show sub-nodes) ---
-      activeNode = null; // We are not showing content, just sub-nodes
-      zoomedNode = node;
-      zoomedNode.classList.add('zoomed');
-    }
-    
-    const nodeToCenter = activeNode || zoomedNode;
-    if (!nodeToCenter) return;
-
-    // Calculate scale
-    const nodeWidth = nodeToCenter.offsetWidth;
-    const nodeHeight = nodeToCenter.offsetHeight;
-    const scaleX = (viewport.width * 0.9) / nodeWidth;
-    const scaleY = (viewport.height * 0.9) / nodeHeight;
-    let scale = Math.min(scaleX, scaleY);
-    
-    // If we are zooming to a parent node, don't zoom in *too* much
-    if (!activeNode && zoomedNode) {
-        scale = Math.min(scale, 1.5); // Limit zoom on parent nodes
-    }
-
-    // Use absolute coordinates for centering
-    const translateX = -parseFloat(nodeToCenter.dataset.absX) * scale;
-    const translateY = -parseFloat(nodeToCenter.dataset.absY) * scale;
-
-    const transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-    world.style.transform = transform;
-    
-    // Update lines
-    drawConnectionLines();
-  }
-
-  // 3. Zoom Out Function (NEW LOGIC)
-  function zoomOut() {
-    if (activeNode) {
-      // We are in a sub-node, go back to parent node view
-      const parent = activeNode.closest('.node');
-      activeNode.classList.remove('active');
-      activeNode = null;
-      if(parent) {
-        zoomToNode(parent);
-      } else {
-        // Failsafe: go to overview
-        zoomToOverview();
-      }
-    } else if (zoomedNode) {
-      // We are in a parent node view, go back to overview
-      zoomedNode.classList.remove('zoomed');
-      zoomedNode = null;
-      zoomToOverview();
-    }
-  }
-  
-  function zoomToOverview() {
-      activeNode = null;
-      zoomedNode = null;
-      document.body.classList.remove('zoomed-in');
-      const transform = `translate(${overviewState.x}px, ${overviewState.y}px) scale(${overviewState.scale})`;
-      world.style.transform = transform;
-      drawConnectionLines();
-  }
-  
-  // 4. Calculate Overview
-  function calculateOverview() {
-    if (mainNodes.length === 0) return;
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    mainNodes.forEach(node => {
-      const x = parseFloat(node.dataset.absX);
-      const y = parseFloat(node.dataset.absY);
-      const width = node.offsetWidth || 200;
-      const height = node.offsetHeight || 100;
-      minX = Math.min(minX, x - width / 2);
-      maxX = Math.max(maxX, x + width / 2);
-      minY = Math.min(minY, y - height / 2);
-      maxY = Math.max(maxY, y + height / 2);
-    });
-    const mapWidth = maxX - minX;
-    const mapHeight = maxY - minY;
-    const scaleX = viewport.width / (mapWidth * 1.2);
-    const scaleY = viewport.height / (mapHeight * 1.2);
-    const scale = Math.min(scaleX, scaleY, 1);
-    const mapCenterX = (minX + maxX) / 2;
-    const mapCenterY = (minY + maxY) / 2;
-    const translateX = -mapCenterX * scale;
-    const translateY = -mapCenterY * scale;
-    overviewState = { x: translateX, y: translateY, scale: scale };
-  }
-
-  // 5. Draw Connection Lines
-  function drawConnectionLines() {
-    const worldRect = world.getBoundingClientRect();
-    const svgNS = "[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)";
-    svgLines.innerHTML = ''; // Clear old lines
-    
-    let connections = mainConnections;
-    
-    // If a parent node is zoomed, draw lines to its children
-    if (zoomedNode && !activeNode) {
-        connections = [];
-        const children = zoomedNode.querySelectorAll('.sub-node');
-        children.forEach(child => {
-            connections.push([zoomedNode.id, child.id]);
+      // Add main node
+      nodes.push({
+        id: id,
+        label: title,
+        shape: 'circle',
+        size: 30,
+        font: { size: 16, color: '#4D9DE0', face: 'IBM Plex Mono' },
+        color: {
+          background: '#111522cc',
+          border: '#4D9DE088',
+          highlight: { background: '#111522ee', border: '#E15554' },
+          hover: { background: '#111522ee', border: '#E15554' }
+        },
+        borderWidth: 2,
+        group: 'main'
+      });
+      
+      // Parse sub-nodes
+      const subNodeElements = nodeEl.querySelectorAll('.sub-node');
+      subNodeElements.forEach(subNodeEl => {
+        const subId = subNodeEl.id;
+        const subTitle = subNodeEl.querySelector('.sub-node-title')?.textContent || '';
+        
+        nodes.push({
+          id: subId,
+          label: subTitle,
+          shape: 'box',
+          size: 20,
+          font: { size: 12, color: '#D0D0E0', face: 'IBM Plex Mono' },
+          color: {
+            background: '#111522cc',
+            border: '#4D9DE088',
+            highlight: { background: '#111522ee', border: '#E15554' },
+            hover: { background: '#111522ee', border: '#E15554' }
+          },
+          borderWidth: 2,
+          hidden: true, // Initially hidden
+          group: 'sub',
+          parent: id
         });
-    }
+        
+        // Add edge from parent to child
+        edges.push({
+          from: id,
+          to: subId,
+          color: { color: '#4D9DE033', highlight: '#4D9DE088', hover: '#4D9DE088' },
+          width: 2,
+          smooth: { type: 'curvedCW', roundness: 0.2 },
+          hidden: true
+        });
+      });
+    });
+    
+    // Add main connections
+    mainConnections.forEach(conn => {
+      edges.push({
+        from: conn[0],
+        to: conn[1],
+        color: { color: '#4D9DE033', highlight: '#4D9DE0', hover: '#4D9DE0' },
+        width: 2,
+        dashes: [4, 2],
+        smooth: { type: 'continuous' }
+      });
+    });
+    
+    return { nodes, edges };
+  }
 
-    connections.forEach(pair => {
-      const startNode = document.getElementById(pair[0]);
-      const endNode = document.getElementById(pair[1]);
-      if (startNode && endNode) {
-        const line = document.createElementNS(svgNS, 'line');
-        const x1 = (worldRect.width / 2) + parseFloat(startNode.dataset.absX);
-        const y1 = (worldRect.height / 2) + parseFloat(startNode.dataset.absY);
-        const x2 = (worldRect.width / 2) + parseFloat(endNode.dataset.absX);
-        const y2 = (worldRect.height / 2) + parseFloat(endNode.dataset.absY);
-        line.setAttribute('x1', x1);
-        line.setAttribute('y1', y1);
-        line.setAttribute('x2', x2);
-        line.setAttribute('y2', y2);
-        if (zoomedNode && (startNode.id === zoomedNode.id || endNode.id === zoomedNode.id)) {
-            line.classList.add('active');
-        }
-        svgLines.appendChild(line);
+  // ============================================
+  // Initialize vis-network
+  // ============================================
+  const { nodes: nodesArray, edges: edgesArray } = parseDataFromDOM();
+  
+  const nodesDataset = new vis.DataSet(nodesArray);
+  const edgesDataset = new vis.DataSet(edgesArray);
+  
+  const data = {
+    nodes: nodesDataset,
+    edges: edgesDataset
+  };
+  
+  const options = {
+    layout: {
+      hierarchical: false
+    },
+    physics: {
+      enabled: true,
+      stabilization: {
+        enabled: true,
+        iterations: 200,
+        updateInterval: 25
+      },
+      barnesHut: {
+        gravitationalConstant: -8000,
+        centralGravity: 0.3,
+        springLength: 200,
+        springConstant: 0.04,
+        damping: 0.09,
+        avoidOverlap: 0.5
+      }
+    },
+    interaction: {
+      hover: true,
+      zoomView: true,
+      dragView: true,
+      navigationButtons: false,
+      keyboard: {
+        enabled: false
+      }
+    },
+    edges: {
+      smooth: {
+        enabled: true,
+        type: 'continuous'
+      }
+    },
+    nodes: {
+      borderWidthSelected: 3
+    }
+  };
+  
+  const network = new vis.Network(container, data, options);
+  
+  // Track the currently focused node
+  let currentFocusedNode = null;
+  let visibleSubNodes = new Set();
+  
+  // ============================================
+  // Event Handlers
+  // ============================================
+  
+  // Click event handler
+  network.on('click', (params) => {
+    if (params.nodes.length > 0) {
+      const nodeId = params.nodes[0];
+      const node = nodesDataset.get(nodeId);
+      
+      if (node.group === 'main') {
+        // Main node clicked - focus and show sub-nodes
+        handleMainNodeClick(nodeId);
+      } else if (node.group === 'sub') {
+        // Sub-node clicked - show content modal
+        handleSubNodeClick(nodeId);
+      }
+    }
+  });
+  
+  function handleMainNodeClick(nodeId) {
+    currentFocusedNode = nodeId;
+    
+    // Focus on the main node
+    network.focus(nodeId, {
+      scale: 1.2,
+      animation: {
+        duration: 800,
+        easingFunction: 'easeInOutQuad'
       }
     });
     
-    svgLines.style.transform = world.style.transform;
+    // Show sub-nodes for this main node
+    const allNodes = nodesDataset.get();
+    allNodes.forEach(node => {
+      if (node.parent === nodeId) {
+        nodesDataset.update({ id: node.id, hidden: false });
+        visibleSubNodes.add(node.id);
+        
+        // Show edges to this sub-node
+        const connectedEdges = edgesDataset.get({
+          filter: edge => edge.from === nodeId && edge.to === node.id
+        });
+        connectedEdges.forEach(edge => {
+          edgesDataset.update({ id: edge.id, hidden: false });
+        });
+      }
+    });
+    
+    // Show zoom out button
+    zoomOutBtn.style.opacity = '1';
+    zoomOutBtn.style.visibility = 'visible';
   }
-
-  // 6. Event Listeners
-  world.addEventListener('click', (e) => {
-    const clickedNode = e.target.closest('.node, .sub-node');
-    if (!clickedNode) return;
-    
-    if (clickedNode.classList.contains('active')) {
-      // Node is already active, do nothing
-      return;
-    }
-    
-    e.stopPropagation();
-    zoomToNode(clickedNode);
-  });
-
-  zoomOutBtn.addEventListener('click', zoomOut);
   
-  // 7. INITIALIZATION
-  function initializeMap() {
-    viewport.width = window.innerWidth;
-    viewport.height = window.innerHeight;
-    svgLines.setAttribute('viewBox', `0 0 ${viewport.width} ${viewport.height}`);
-    calculateOverview();
-    if (activeNode) {
-      zoomToNode(activeNode);
-    } else if (zoomedNode) {
-      zoomToNode(zoomedNode);
-    } else {
-      zoomToOverview();
-    }
+  function handleSubNodeClick(nodeId) {
+    // Get content for this node
+    const content = contentData[nodeId] || '<p>Obsah není dostupný</p>';
+    
+    // Show modal
+    modalContent.innerHTML = content;
+    modal.style.display = 'block';
   }
-
-  setTimeout(() => {
-    initializeMap();
-    window.addEventListener('resize', initializeMap);
-  }, 100);
+  
+  // Modal close handler
+  modalCloseBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+  
+  // Close modal when clicking overlay
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal || e.target.id === 'modal-overlay') {
+      modal.style.display = 'none';
+    }
+  });
+  
+  // Zoom out button handler
+  zoomOutBtn.addEventListener('click', () => {
+    if (currentFocusedNode) {
+      // Hide all sub-nodes
+      visibleSubNodes.forEach(subNodeId => {
+        nodesDataset.update({ id: subNodeId, hidden: true });
+        
+        // Hide edges
+        const connectedEdges = edgesDataset.get({
+          filter: edge => edge.to === subNodeId
+        });
+        connectedEdges.forEach(edge => {
+          edgesDataset.update({ id: edge.id, hidden: true });
+        });
+      });
+      
+      visibleSubNodes.clear();
+      currentFocusedNode = null;
+    }
+    
+    // Fit the view to show all main nodes
+    network.fit({
+      animation: {
+        duration: 800,
+        easingFunction: 'easeInOutQuad'
+      }
+    });
+    
+    // Hide zoom out button
+    zoomOutBtn.style.opacity = '0';
+    zoomOutBtn.style.visibility = 'hidden';
+  });
+  
+  // ============================================
+  // Initialization
+  // ============================================
+  
+  // Wait for stabilization and then fit the view
+  network.once('stabilizationIterationsDone', () => {
+    network.fit({
+      animation: {
+        duration: 1000,
+        easingFunction: 'easeInOutQuad'
+      }
+    });
+  });
+  
+  // Stop physics after stabilization for better performance
+  network.on('stabilizationIterationsDone', () => {
+    network.setOptions({ physics: { enabled: false } });
+  });
 });
