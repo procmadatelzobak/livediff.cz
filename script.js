@@ -1,66 +1,63 @@
 document.addEventListener('DOMContentLoaded', () => {
   const world = document.getElementById('world');
+  const svgLines = document.getElementById('connection-lines');
   const zoomOutBtn = document.getElementById('zoom-out-btn');
   const allNodes = document.querySelectorAll('.node, .sub-node');
+  const mainNodes = document.querySelectorAll('.node');
   const viewport = {
     width: window.innerWidth,
     height: window.innerHeight
   };
 
-  let activeNode = null;
-  const originalState = {
-    x: 0,
-    y: 0,
-    scale: 1
-  };
+  // Constants for fallback node dimensions
+  const DEFAULT_NODE_WIDTH = 200;
+  const DEFAULT_NODE_HEIGHT = 100;
+  // Padding factor for overview mode (adds 20% padding around all nodes)
+  const OVERVIEW_PADDING_FACTOR = 1.2;
 
-  // 1. Set initial positions for all nodes
+  let activeNode = null;
+  let overviewState = { x: 0, y: 0, scale: 1 };
+  const nodeConnections = [
+    ['node-intro', 'node-rights'],
+    ['node-intro', 'node-principles'],
+    ['node-intro', 'node-notes'],
+    ['node-rights', 'node-principles']
+  ];
+
+  // 1. Set initial positions
   allNodes.forEach(node => {
     node.style.setProperty('--x', `${node.dataset.x}px`);
     node.style.setProperty('--y', `${node.dataset.y}px`);
   });
 
-  // 2. Main Zoom Function (NOW SMARTER)
+  // 2. Main Zoom Function (FIXED)
   function zoomToNode(node) {
     if (activeNode) {
       activeNode.classList.remove('active');
     }
     
     activeNode = node;
-    // CRITICAL: Add 'active' class BEFORE measuring
-    // This makes the hidden content take up space
     activeNode.classList.add('active');
     document.body.classList.add('zoomed-in');
 
-    // --- NEW LOGIC ---
-    // Measure the node's dimensions *after* content is visible
-    const nodeWidth = node.offsetWidth;
-    const nodeHeight = node.offsetHeight;
+    const nodeWidth = node.offsetWidth || DEFAULT_NODE_WIDTH;
+    const nodeHeight = node.offsetHeight || DEFAULT_NODE_HEIGHT;
 
-    // Calculate the scale needed to fit the node to 90% of the viewport
-    // Guard against division by zero
-    const scaleX = nodeWidth > 0 ? (viewport.width * 0.9) / nodeWidth : 1;
-    const scaleY = nodeHeight > 0 ? (viewport.height * 0.9) / nodeHeight : 1;
-    
-    // Use the *smaller* scale to ensure the whole node fits
+    const scaleX = (viewport.width * 0.9) / nodeWidth;
+    const scaleY = (viewport.height * 0.9) / nodeHeight;
     const scale = Math.min(scaleX, scaleY);
-    // --- END NEW LOGIC ---
 
-    // Calculate translation to center the node
-    const nodeRect = node.getBoundingClientRect();
-    const worldRect = world.getBoundingClientRect();
-    
-    const nodeCenterX = (nodeRect.left - worldRect.left) + (nodeRect.width / 2);
-    const nodeCenterY = (nodeRect.top - worldRect.top) + (nodeRect.height / 2);
+    // *** FIX: Centering logic for 'transform-origin: center' ***
+    const translateX = -parseFloat(node.dataset.x) * scale;
+    const translateY = -parseFloat(node.dataset.y) * scale;
 
-    const translateX = (viewport.width / 2) - (nodeCenterX * scale);
-    const translateY = (viewport.height / 2) - (nodeCenterY * scale);
-
-    // Apply the new, calculated transform
-    world.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    // Apply the transform to both world and SVG lines
+    const transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    world.style.transform = transform;
+    svgLines.style.transform = transform;
   }
 
-  // 3. Zoom Out Function
+  // 3. Zoom Out Function (FIXED)
   function zoomOut() {
     if (activeNode) {
       activeNode.classList.remove('active');
@@ -68,11 +65,72 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.body.classList.remove('zoomed-in');
     
-    // Reset transform
-    world.style.transform = `translate(${originalState.x}px, ${originalState.y}px) scale(${originalState.scale})`;
+    const transform = `translate(${overviewState.x}px, ${overviewState.y}px) scale(${overviewState.scale})`;
+    world.style.transform = transform;
+    svgLines.style.transform = transform;
+  }
+  
+  // 4. Calculate Overview (FIXED)
+  function calculateOverview() {
+    if (mainNodes.length === 0) return;
+
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+    mainNodes.forEach(node => {
+      const x = parseFloat(node.dataset.x);
+      const y = parseFloat(node.dataset.y);
+      const width = node.offsetWidth || DEFAULT_NODE_WIDTH;
+      const height = node.offsetHeight || DEFAULT_NODE_HEIGHT;
+
+      minX = Math.min(minX, x - width / 2);
+      maxX = Math.max(maxX, x + width / 2);
+      minY = Math.min(minY, y - height / 2);
+      maxY = Math.max(maxY, y + height / 2);
+    });
+
+    const mapWidth = maxX - minX;
+    const mapHeight = maxY - minY;
+
+    // Guard against division by zero if all nodes are at the same position
+    const scaleX = mapWidth > 0 ? viewport.width / (mapWidth * OVERVIEW_PADDING_FACTOR) : 1;
+    const scaleY = mapHeight > 0 ? viewport.height / (mapHeight * OVERVIEW_PADDING_FACTOR) : 1;
+    const scale = Math.min(scaleX, scaleY, 1);
+
+    const mapCenterX = (minX + maxX) / 2;
+    const mapCenterY = (minY + maxY) / 2;
+
+    const translateX = -mapCenterX * scale;
+    const translateY = -mapCenterY * scale;
+
+    overviewState = { x: translateX, y: translateY, scale: scale };
   }
 
-  // 4. Event Listeners
+  // 5. POLISH: Draw Connection Lines
+  function drawConnectionLines() {
+    const svgNS = "http://www.w3.org/2000/svg";
+    
+    nodeConnections.forEach(pair => {
+      const startNode = document.getElementById(pair[0]);
+      const endNode = document.getElementById(pair[1]);
+
+      if (startNode && endNode) {
+        const line = document.createElementNS(svgNS, 'line');
+        // Get center of viewport + node's offset
+        const x1 = (viewport.width / 2) + parseFloat(startNode.dataset.x);
+        const y1 = (viewport.height / 2) + parseFloat(startNode.dataset.y);
+        const x2 = (viewport.width / 2) + parseFloat(endNode.dataset.x);
+        const y2 = (viewport.height / 2) + parseFloat(endNode.dataset.y);
+        
+        line.setAttribute('x1', x1);
+        line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2);
+        line.setAttribute('y2', y2);
+        svgLines.appendChild(line);
+      }
+    });
+  }
+
+  // 6. Event Listeners
   world.addEventListener('click', (e) => {
     const clickedNode = e.target.closest('.node, .sub-node');
     
@@ -84,13 +142,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   zoomOutBtn.addEventListener('click', zoomOut);
   
-  // 5. --- FIX 1 ---
-  // Automatically zoom to the intro node on page load
-  const introNode = document.getElementById('node-intro');
-  if (introNode) {
-    // Use a small delay to ensure fonts/layout are ready
-    setTimeout(() => {
-      zoomToNode(introNode);
-    }, 100);
-  }
+  // 7. INITIALIZATION
+  // Set SVG viewport once during initialization
+  svgLines.setAttribute('viewBox', `0 0 ${viewport.width} ${viewport.height}`);
+  calculateOverview();
+  drawConnectionLines();
+  zoomOut(); // Apply the overview state on load
 });
