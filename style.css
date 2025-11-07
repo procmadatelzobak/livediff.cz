@@ -156,6 +156,8 @@ body.zoomed-in .node:not(.active),
 body.zoomed-in .sub-node:not(.active) {
   opacity: 0.1;
   pointer-events: none;
+}
+body.zoomed-in .node:not(.active) {
   animation-play-state: paused;
 }
 .node:not(.active) .sub-node-container {
