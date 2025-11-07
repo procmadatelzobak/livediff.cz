@@ -10,6 +10,8 @@
   
   --font-main: 'IBM Plex Mono', monospace;
   --transition-speed: 0.9s;
+  --animation-pulse-duration: 5s;
+}
 }
 
 html, body {
@@ -70,8 +72,7 @@ html, body {
   transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y)));
   
   /* POLISH: Gradient Border */
-  border: 2px solid transparent;
-  background-clip: padding-box;
+  border: 2px solid;
   border-image: linear-gradient(to bottom right, var(--color-accent-1), var(--color-accent-2));
   border-image-slice: 1;
 }
@@ -85,7 +86,7 @@ html, body {
   border-radius: 50%;
   text-align: center;
   /* POLISH: Pulse animation */
-  animation: pulse 5s infinite ease-in-out;
+  animation: pulse var(--animation-pulse-duration) infinite ease-in-out;
 }
 .sub-node {
   min-width: 150px;

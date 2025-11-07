@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Constants for fallback node dimensions
   const DEFAULT_NODE_WIDTH = 200;
   const DEFAULT_NODE_HEIGHT = 100;
+  // Padding factor for overview mode (adds 20% padding around all nodes)
+  const OVERVIEW_PADDING_FACTOR = 1.2;
 
   let activeNode = null;
   let overviewState = { x: 0, y: 0, scale: 1 };
@@ -90,8 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const mapHeight = maxY - minY;
 
     // Guard against division by zero if all nodes are at the same position
-    const scaleX = mapWidth > 0 ? viewport.width / (mapWidth * 1.2) : 1;
-    const scaleY = mapHeight > 0 ? viewport.height / (mapHeight * 1.2) : 1;
+    const scaleX = mapWidth > 0 ? viewport.width / (mapWidth * OVERVIEW_PADDING_FACTOR) : 1;
+    const scaleY = mapHeight > 0 ? viewport.height / (mapHeight * OVERVIEW_PADDING_FACTOR) : 1;
     const scale = Math.min(scaleX, scaleY, 1);
 
     const mapCenterX = (minX + maxX) / 2;
