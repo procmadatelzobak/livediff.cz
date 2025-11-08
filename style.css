@@ -76,6 +76,8 @@ html, body {
   transform: translate(calc(-50% + var(--x, 0px)), calc(-50% + var(--y, 0px)));
   border: 2px solid var(--color-border);
   z-index: 1;
+  forced-color-adjust: none;
+  -ms-high-contrast-adjust: none;
 }
 
 .node {
