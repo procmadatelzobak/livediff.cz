@@ -250,6 +250,24 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   
   const options = {
+    groups: {
+      main: {
+        color: {
+          background: NODE_BG,
+          border: BORDER,
+          highlight: { background: NODE_BG_HOVER, border: HILITE },
+          hover: { background: NODE_BG_HOVER, border: HILITE }
+        }
+      },
+      sub: {
+        color: {
+          background: NODE_BG,
+          border: BORDER,
+          highlight: { background: NODE_BG_HOVER, border: HILITE },
+          hover: { background: NODE_BG_HOVER, border: HILITE }
+        }
+      }
+    },
     layout: {
       hierarchical: false
     },
@@ -292,6 +310,13 @@ document.addEventListener('DOMContentLoaded', () => {
         border: BORDER,
         highlight: { background: NODE_BG_HOVER, border: HILITE },
         hover: { background: NODE_BG_HOVER, border: HILITE }
+      },
+      // Completely disable chosen styling to prevent yellow background
+      chosen: {
+        node: function(values, id, selected, hovering) {
+          // Don't modify any values - keep original colors
+        },
+        label: false
       }
       // --- KONEC OPRAVY ---
     }
