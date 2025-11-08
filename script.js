@@ -3,6 +3,13 @@
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Color constants - using rgba() instead of 8-digit hex codes for better compatibility
+  const NODE_BG       = 'rgba(17, 21, 34, 0.80)';  // Replaces #111522cc
+  const NODE_BG_HOVER = 'rgba(17, 21, 34, 0.93)';  // Replaces #111522ee
+  const BORDER        = 'rgba(77, 157, 224, 0.53)';// Replaces #4D9DE088
+  const BORDER_LINE   = 'rgba(77, 157, 224, 0.2)'; // Replaces #4D9DE033
+  const HILITE        = '#E15554';
+  
   // Get references to DOM elements
   const container = document.getElementById('mind-map-container');
   const zoomOutBtn = document.getElementById('zoom-out-btn');
@@ -162,10 +169,10 @@ document.addEventListener('DOMContentLoaded', () => {
         size: 30,
         font: { size: 16, color: '#4D9DE0', face: 'IBM Plex Mono' },
         color: {
-          background: '#111522cc',
-          border: '#4D9DE088',
-          highlight: { background: '#111522ee', border: '#E15554' },
-          hover: { background: '#111522ee', border: '#E15554' }
+          background: NODE_BG,
+          border: BORDER,
+          highlight: { background: NODE_BG_HOVER, border: HILITE },
+          hover: { background: NODE_BG_HOVER, border: HILITE }
         },
         borderWidth: 2,
         group: 'main'
@@ -184,10 +191,10 @@ document.addEventListener('DOMContentLoaded', () => {
           size: 20,
           font: { size: 12, color: '#D0D0E0', face: 'IBM Plex Mono' },
           color: {
-            background: '#111522cc',
-            border: '#4D9DE088',
-            highlight: { background: '#111522ee', border: '#E15554' },
-            hover: { background: '#111522ee', border: '#E15554' }
+            background: NODE_BG,
+            border: BORDER,
+            highlight: { background: NODE_BG_HOVER, border: HILITE },
+            hover: { background: NODE_BG_HOVER, border: HILITE }
           },
           borderWidth: 2,
           hidden: true, // Initially hidden
@@ -199,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         edges.push({
           from: id,
           to: subId,
-          color: { color: '#4D9DE033', highlight: '#4D9DE088', hover: '#4D9DE088' },
+          color: { color: BORDER_LINE, highlight: BORDER, hover: BORDER },
           width: 2,
           smooth: { type: 'curvedCW', roundness: 0.2 },
           hidden: true
@@ -212,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
       edges.push({
         from: conn[0],
         to: conn[1],
-        color: { color: '#4D9DE033', highlight: '#4D9DE0', hover: '#4D9DE0' },
+        color: { color: BORDER_LINE, highlight: '#4D9DE0', hover: '#4D9DE0' },
         width: 2,
         dashes: [4, 2],
         smooth: { type: 'continuous' }
@@ -271,7 +278,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     },
     nodes: {
-      borderWidthSelected: 3
+      borderWidthSelected: 3,
+      color: {
+        background: NODE_BG,
+        border: BORDER,
+        highlight: { background: NODE_BG_HOVER, border: HILITE },
+        hover: { background: NODE_BG_HOVER, border: HILITE }
+      }
     }
   };
   
