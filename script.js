@@ -17,6 +17,57 @@ document.addEventListener('DOMContentLoaded', () => {
     ['node-ankap', 'node-polemika']
   ];
 
+  // URL mapping for sub-nodes to Urza.cz chapters
+  const URL_MAPPING = {
+    'sub-node-uvod': 'uvod',
+    'sub-node-ceny': 'vzacne-zdroje-a-system-cen',
+    'sub-node-planovani': 'proc-selhava-centralni-planovani',
+    'sub-node-kalkulace': 'nemoznost-ekonomicke-kalkulace',
+    'sub-node-kalkulace-jednotlivec': 'problem-kalkulace-ocima-jednotlivce',
+    'sub-node-nap': 'princip-neagrese',
+    'sub-node-nezodpovednost': 'podpora-nezodpovednosti',
+    'sub-node-penize': 'penize',
+    'sub-node-hasici': 'hasici',
+    'sub-node-kultura': 'umeni-a-kultura',
+    'sub-node-skolstvi': 'skolstvi',
+    'sub-node-skolstvi-svoboda': 'skolstvi-a-svoboda',
+    'sub-node-propaganda': 'vzdelavani-a-propaganda',
+    'sub-node-social': 'socialni-system',
+    'sub-node-zdravi': 'zdravotnictvi',
+    'sub-node-prostranstvi': 'verejna-prostranstvi-a-svoboda-slova',
+    'sub-node-silnice': 'silnice-a-dopravni-pravidla',
+    'sub-node-zivotni': 'zivotni-prostredi',
+    'sub-node-soudy': 'soudnictvi',
+    'sub-node-soudy-nap': 'svobodne-soudnictvi-a-princip-neagrese',
+    'sub-node-vymahani': 'vymahani-prava',
+    'sub-node-trest': 'zlocin-a-trest',
+    'sub-node-armada': 'armada',
+    'sub-node-myty': 'boreni-mytu',
+    'sub-node-zaver': 'zaver',
+    'sub-node-drogy': 'drogy',
+    'sub-node-zbrane': 'zbrane',
+    'sub-node-veda': 'veda',
+    'sub-node-prace': 'prace',
+    'sub-node-etika': 'etika',
+    'sub-node-prava': 'lidska-prava',
+    'sub-node-nasili': 'anarchie-je-nasilna',
+    'sub-node-agrese': 'agrese',
+    'sub-node-jednani': 'lidske-jednani',
+    'sub-node-nezodpovednost2': 'nezodpovednost',
+    'sub-node-monopoly': 'monopoly',
+    'sub-node-kartely': 'kartely',
+    'sub-node-dumping': 'dumpingove-ceny',
+    'sub-node-spekulanti': 'spekulanti',
+    'sub-node-statky': 'verejne-statky',
+    'sub-node-nekvalitni': 'nekvalitni-soukrome-instituce',
+    'sub-node-praxe': 'teorie-a-praxe',
+    'sub-node-vlastnosti': 'vlastnosti-lidi',
+    'sub-node-tradice': 'tradice-statu',
+    'sub-node-inzenyrstvi': 'socialni-inzenyrstvi',
+    'sub-node-chyby': 'chyby-anarchokapitalismu',
+    'sub-node-byrokracie': 'byrokracie-v-anarchokapitalismu'
+  };
+
   // Content data for each node
   // NOTE: Full content should be scraped from https://ankap.urza.cz/
   // Current content is placeholder - update with actual HTML content from source
@@ -229,8 +280,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const node = nodesDataset.get(nodeId);
       
       if (node.group === 'main') {
-        // Main node clicked - focus and show sub-nodes
-        handleMainNodeClick(nodeId);
+        if (nodeId === currentFocusedNode) {
+          // Node is already open, collapse it
+          zoomOutBtn.click(); // Programmatically click the zoom-out button
+        } else {
+          // Main node clicked - focus and show sub-nodes
+          handleMainNodeClick(nodeId);
+        }
       } else if (node.group === 'sub') {
         // Sub-node clicked - show content modal
         handleSubNodeClick(nodeId);
@@ -273,12 +329,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   function handleSubNodeClick(nodeId) {
-    // Get content for this node
-    const content = contentData[nodeId] || '<p>Obsah není dostupný</p>';
+    // Get base content for this node
+    let content = contentData[nodeId] || '<p>Obsah není dostupný</p>';
+    
+    // Get the URL slug from the mapping
+    const urlSlug = URL_MAPPING[nodeId];
+    
+    if (urlSlug) {
+      const fullUrl = `https://ankap.urza.cz/${urlSlug}/`;
+      const linkHtml = `<a href="${fullUrl}" target="_blank" class="urza-link">Více na Urza.cz</a>`;
+      content += linkHtml; // Append the link
+    }
     
     // Show modal
     modalContent.innerHTML = content;
     modal.style.display = 'block';
+    
+    // Scroll modal to top
+    document.getElementById('modal-content-wrapper').scrollTop = 0;
   }
   
   // Modal close handler
