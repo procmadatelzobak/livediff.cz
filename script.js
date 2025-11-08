@@ -177,6 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
           hover: { background: NODE_BG_HOVER, border: HILITE }
         },
         borderWidth: 2,
+        chosen: false, // Disable default selection color change
         group: 'main'
       });
       
@@ -200,6 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
             hover: { background: NODE_BG_HOVER, border: HILITE }
           },
           borderWidth: 2,
+          chosen: false, // Disable default selection color change
           hidden: true, // Initially hidden
           group: 'sub',
           parent: id
