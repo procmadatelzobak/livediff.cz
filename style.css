@@ -30,6 +30,12 @@ html, body {
   overflow: hidden;
   position: relative;
 }
+#map-container canvas {
+  /* OPRAVA: Vypnutí přepisování barev v režimu vysokého kontrastu */
+  forced-color-adjust: none;
+  -ms-high-contrast-adjust: none;
+}
+
 
 /* SVG lines container */
 #connection-lines {
@@ -76,8 +82,6 @@ html, body {
   transform: translate(calc(-50% + var(--x, 0px)), calc(-50% + var(--y, 0px)));
   border: 2px solid var(--color-border);
   z-index: 1;
-  forced-color-adjust: none;
-  -ms-high-contrast-adjust: none;
 }
 
 .node {
