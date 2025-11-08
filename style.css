@@ -312,7 +312,7 @@ h3 {
 
 #modal-content .urza-link:hover {
   background: var(--color-accent-2);
-  color: var(--color-text);
+  color: black ; /* var(--color-text) */
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
