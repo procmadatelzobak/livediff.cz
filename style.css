@@ -30,11 +30,7 @@ html, body {
   overflow: hidden;
   position: relative;
 }
-#map-container canvas {
-  /* OPRAVA: Vypnutí přepisování barev v režimu vysokého kontrastu */
-  forced-color-adjust: none;
-  -ms-high-contrast-adjust: none;
-}
+
 
 
 /* SVG lines container */
