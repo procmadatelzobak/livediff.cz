@@ -4,7 +4,7 @@
   --color-background-end: #0F131F;   /* Near Black-Blue */
   --color-text: #D0D0E0;
   --color-accent-1: #4D9DE0;         /* Technical Blue */
-  --color-accent-2: #E15554;         /* Soft Red/Orange Accent */
+  --color-accent-2: #FFFF00;         /* Yellow | #E15554; Soft Red/Orange Accent */ 
   --color-node-bg: #111522cc;        /* Translucent node bg */
   --color-border: #4D9DE088;
   --color-border-hover: #E15554;
