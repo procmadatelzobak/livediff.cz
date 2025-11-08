@@ -298,6 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   
   const network = new vis.Network(container, data, options);
+  window.network = network; // Expose for debugging
   
   // Track the currently focused node
   let currentFocusedNode = null;
