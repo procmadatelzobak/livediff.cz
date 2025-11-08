@@ -293,3 +293,24 @@ h3 {
 #modal-content p {
   margin: 1rem 0;
 }
+
+/* --- Link Button Styling --- */
+#modal-content .urza-link {
+  display: block;
+  padding: 0.8rem 1rem;
+  margin-top: 1.5rem;
+  background: var(--color-accent-1);
+  color: var(--color-background-end);
+  text-decoration: none;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+#modal-content .urza-link:hover {
+  background: var(--color-accent-2);
+  color: var(--color-text);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
