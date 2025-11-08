@@ -294,18 +294,6 @@ h3 {
   margin: 1rem 0;
 }
 
-/* --- Odkazy uvnitř modalu --- */
-#modal-content a {
-  color: var(--color-accent-1);
-  text-decoration: underline;
-  transition: all 0.2s;
-}
-#modal-content a:hover {
-  color: #FFFF00; /* Žlutá */
-  text-decoration: none;
-}
-
-
 /* --- Link Button Styling --- */
 #modal-content .urza-link {
   display: block;
@@ -321,8 +309,23 @@ h3 {
 }
 
 #modal-content .urza-link:hover {
-  background: #FFFF00; /* Žlutá */
-  color: #000000; /* Černá */
+  background: var(--color-accent-2);
+  color: var(--color-text);
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+#modal-content a {
+  color: var(--color-accent-1);
+  text-decoration: underline;
+}
+
+#modal-content a:hover {
+  color: var(--color-accent-2);
+}
+
+#modal-content hr {
+    border: 0;
+    border-top: 1px solid var(--color-line);
+    margin: 1.5rem 0;
 }

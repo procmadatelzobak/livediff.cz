@@ -14,7 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const mainConnections = [
     ['node-ankap', 'node-amen'],
     ['node-ankap', 'node-ekonomie'],
-    ['node-ankap', 'node-polemika']
+    ['node-ankap', 'node-polemika'],
+    ['node-ankap', 'node-about']
   ];
 
   // URL mapping for sub-nodes to Urza.cz chapters
@@ -126,7 +127,18 @@ document.addEventListener('DOMContentLoaded', () => {
     'sub-node-tradice': '<h2>Tradice státu</h2><p>"Stát tu byl vždycky" je špatný argument. Také tu vždycky bylo otroctví, nevolnictví a absolutní monarchie. Tradice neznamená správnost. Moderní stát je relativně nový vynález. Lidstvo většinu své existence fungovalo bez centralizované státní moci a často lépe než dnes.</p>',
     'sub-node-inzenyrstvi': '<h2>Sociální inženýrství</h2><p>Anarchokapitalismus není sociální inženýrství - je to odmítnutí inženýrství. Nesnažíme se navrhnout dokonalou společnost, jen chceme ukončit násilné vměšování do dobrovolných interakcí. Spontánní řád vznikající ze svobodného jednání je lepší než jakýkoliv plánovaný systém.</p>',
     'sub-node-chyby': '<h2>Chyby anarchokapitalismu</h2><p>V anarchokapitalismu budou chyby - lidé jsou nedokonalí. Rozdíl je, že chyby na trhu jsou lokalizované a samoopravitelné. Špatné rozhodnutí podnikatele ruinuje jeho firmu, ne celou zemi. Státní chyby jsou systémové, rozsáhlé a neopravitelné, protože stát nemá konkurenci ani zpětnou vazbu trhu.</p>',
-    'sub-node-byrokracie': '<h2>Byrokracie v anarchokapitalismu</h2><p>Soukromé firmy mají byrokratické procedury, ale zásadní rozdíl je konkurence. Přebujelá byrokracie ve firmě vede k vyšším nákladům a ztrátě zákazníků. Státní byrokracie nemá žádné omezení - nemůže zkrachovat, nemá konkurenci, a může vás donutit platit za své neefektivní služby.</p>'
+    'sub-node-byrokracie': '<h2>Byrokracie v anarchokapitalismu</h2><p>Soukromé firmy mají byrokratické procedury, ale zásadní rozdíl je konkurence. Přebujelá byrokracie ve firmě vede k vyšším nákladům a ztrátě zákazníků. Státní byrokracie nemá žádné omezení - nemůže zkrachovat, nemá konkurenci, a může vás donutit platit za své neefektivní služby.</p>',
+    // Sub-node for O webu
+    'sub-node-about-content': `
+      <h2>Proč tento web vznikl?</h2>
+      <p>Tento web jsem vytvořil, protože chci prosazovat své životní hodnoty, které jsou zjevně zcela kompatibilní s anarchokapitalismem.</p>
+      <p>O anarchokapitalismu vím díky <a href="https://cs.wikipedia.org/wiki/Urza" target="_blank">Martinu Urzovi</a>, na jehož myšlenky jsem narazil zhruba před 15 lety a okamžitě jsem pochopil, že tento myšlenkový směr zcela odpovídá mým životním hodnotám a etice.</p>
+      <p>Necítím se být nutně "anarchokapitalistou", ale zcela s tímto systémem souzním. Chci tyto informace šířit dál, už jen jako myšlenkový experiment. Anarchokapitalismus obsahuje spoustu myšlenek, které lidem na první pohled připadají absurdní, a přitom jsou vcelku snadno uchopitelné.</p>
+      <p>Samotná polemika s anarchokapitalismem nám tak umožňuje lépe pochopit, jak myslíme, a může nás někam posunout.</p>
+      <hr style="border-color: var(--color-line); border-top: 0; margin: 1rem 0;">
+      <p>Autor webu: Vojtěch Pszczólka<br>
+      <a href="mailto:vojtech@pszczolka.cz">vojtech@pszczolka.cz</a></p>
+    `
   };
 
   // ============================================
@@ -290,6 +302,11 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (node.group === 'sub') {
         // Sub-node clicked - show content modal
         handleSubNodeClick(nodeId);
+      }
+    } else {
+      // Clicked on empty space, zoom out
+      if (currentFocusedNode) {
+        zoomOutBtn.click();
       }
     }
   });
